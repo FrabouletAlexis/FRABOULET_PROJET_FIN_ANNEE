@@ -1,0 +1,42 @@
+<svg width="600" height="660" version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<radialGradient id="sheen" gradientTransform="matrix(1.353218,0,0,1.348928,-77.69,-84.17)" cx="221.44" cy="226.33" r="300" gradientUnits="userSpaceOnUse">
+	<stop stop-color="#FFF" stop-opacity=".31"/>
+	<stop offset="0.19" stop-color="#FFF" stop-opacity=".25"/>
+	<stop offset="0.6" stop-color="#6B6B6B" stop-opacity=".13"/>
+	<stop offset="1" stop-color="#000" stop-opacity=".13"/>
+</radialGradient>
+<clipPath id="clipShield"><path id="shield" d="M1.5 1.5h597V261A550 445 0 0 1 300 658.2 550 445 0 0 1 1.5 261Z"/></clipPath>
+<clipPath id="clipRight"><path id="right" d="M300 1.5H598.5V261A550 445 0 0 1 300 658.2Z"/></clipPath>
+</defs>
+<use xlink:href="#shield" fill="#E20909"/>
+<use xlink:href="#right" fill="#FFF" stroke="#000" stroke-width="3"/>
+
+<g id="diamond3">
+<path id="diamond" d="M48.39 16.82l38 74.8-38 74.8-38-74.8 38-74.8Zm0 34.92l-20.5 40 20.5 40 20.5-40-20.5-40Z" fill="#FCEF3C" stroke="#000" stroke-width="3.3"/>
+<use xlink:href="#diamond" x="105.94"/>
+<use xlink:href="#diamond" x="209.27"/>
+</g>
+<use xlink:href="#diamond3" y="174.07"/>
+<g clip-path="url(#clipShield)">
+<use xlink:href="#diamond3" y="360.29"/>
+</g>
+
+<g clip-path="url(#clipRight)">
+<g id="motif8">
+<g id="motif4">
+<path id="motif" d="M298.13-1.31c6.3 8.48-11.33 11.88-1.82 19.9 4.06 2.73 13.51-3.18 5.19-10.43-1.08-.62 3.75-4.92-3.37-9.47Zm10.53 20.12c-1.58.16-3.1 1.22-4.53 3.91-1.8 4.51 6.11 12.31 11.43 2.69.38-1.18 5.67 2.6 8.6-5.29-5.02 5.72-10.16-1.08-14.82-1.31-.22-.01-.46-.02-.68 0Zm-19.5.06c-4.66.23-9.8 7.09-14.82 1.38 2.93 7.88 8.25 4.11 8.63 5.28 5.33 9.63 13.2 1.83 11.41-2.69-1.65-3.07-3.4-4.05-5.22-3.97Zm10.5 5.5c-4.1 20.21-11.76 34.5-20.07 44.79 3.46-1.03 7.38-3.95 11.13-6.5-2.3 5.29-4.61 9.88-6.91 14.56 1.37-.5 5.72-5.2 11.63-12.13.92 9.52 2.19 14.02 4.06 20.47 1.49-6.44 2.57-10.86 3.75-20.65 3.56 4.37 7 8.77 11.81 12.53l-6.75-15.03c3.49 2.42 7.36 5.58 11.07 6.93-8.78-10.79-16.18-24.76-19.72-44.97Z" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+<use xlink:href="#motif" x="100"/>
+<use xlink:href="#motif" x="200"/>
+<use xlink:href="#motif" x="300"/>
+</g>
+<use xlink:href="#motif4" x="50" y="100"/>
+</g>
+<use xlink:href="#motif8" y="200"/>
+<use xlink:href="#motif8" y="400"/>
+<use xlink:href="#motif4" y="600"/>
+</g>
+
+<use xlink:href="#shield" fill="url(#sheen)"/>
+<use xlink:href="#shield" fill="none" stroke="#000" stroke-width="3"/>
+</svg>
