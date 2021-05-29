@@ -24,6 +24,7 @@ var sautDroite = false;
 /// enemie /// 
 /////////////
 
+var enemieRigth;
 var enemieObjects;
 var archerObjects;
 var chimisteObjects;
@@ -39,14 +40,23 @@ var colosseStun = false;
 
 var vitesseColosse = 150;
 var vitesseSoldat = 250;
+var vitesseChimiste = 250;
 var compteurMax = 60;
 var compteur = compteurMax;
 var dureStun = 10000;
+
+var fiole;
+var chimisteAgro = false;
+var chimisteMask = true;
+var compteurFioleMax = 100;
+var compteurFiole = compteurFioleMax;
+var lancer = false;
 
 var vitesseFleche = 400;
 var fleche;
 var flecheDestroy = true;
 var nbFleche = 0;
+var mortFleche = false;
 
 var archerX;
 var archerY;
@@ -108,21 +118,30 @@ class SceneOne extends Phaser.Scene{
         
     }
     preload(){
-        
-        this.load.spritesheet('mia_anime', 'assets/spritesheet/mia_anime.png', { frameWidth: 125, frameHeight: 150 });
-        this.load.spritesheet('mia_pose', 'assets/spritesheet/mia_pose.png', { frameWidth: 99/2, frameHeight: 150 });
+        this.load.image('parallaxe3','assets/parallaxe/parallaxe_3.png');
+        this.load.image('parallaxe2','assets/parallaxe/parallaxe_2.png');
+        this.load.image('parallaxe1','assets/parallaxe/parallaxe_1.png');
+
+        this.load.spritesheet('vinetta', 'assets/spritesheet/spritesheet_Vinetta.png', { frameWidth: 160, frameHeight: 150 });
+        this.load.spritesheet('vinetta_neutre', 'assets/spritesheet/spritesheet_Vinetta_neutre.png', { frameWidth: 84, frameHeight: 150 });
         this.load.spritesheet('mia_mort', 'assets/spritesheet/mia_mort.png', { frameWidth: 210, frameHeight: 150 });
         this.load.spritesheet('colosse', 'assets/spritesheet/colosse.png', { frameWidth: 116/2, frameHeight: 171 });
         this.load.spritesheet('archer', 'assets/spritesheet/archer.png', { frameWidth: 99/2, frameHeight: 150 });
+        this.load.spritesheet('chimiste', 'assets/spritesheet/chimiste.png', { frameWidth: 99/2, frameHeight: 150 });
         this.load.image('flèche','assets/spritesheet/fleche.png');
 
         this.load.image('fumi','assets/FX/teste_fumi.png');
         this.load.image('fleche','assets/spritesheet/fleche.png');
+        this.load.image('fiole','assets/item/batterie.png');
         
         this.load.image('tiles','assets/tiles/platform.png');
         this.load.tilemapTiledJSON('map','assets/tiles/level.json'); 
     }
     create(){
+        //this.add.image(4800/2, 1760/2, 'parallaxe3').setScrollFactor(0.1);
+        //this.add.image(4800/2, 1760/2, 'parallaxe2').setScrollFactor(0.5);
+        //this.add.image(4800/2, 1760/2, 'parallaxe1').setScrollFactor(1.8).setDepth(2);
+        
         //afficheDroite = this.add.text(10, 50, 'SAUT DROITE : ' + sautDroite, { fontSize: '32px', fill: '#48E14E' }).setScrollFactor(0).setDepth(1);
         afficheInvincible = this.add.text(10, 50, 'Invincible : ' + compteurInvincible, { fontSize: '32px', fill: '#48E14E' }).setScrollFactor(0).setDepth(1);
         afficheCompteur = this.add.text(10, 150, 'fe ' + compteur, { fontSize: '32px', fill: '#48E14E' }).setScrollFactor(0).setDepth(1);
@@ -136,13 +155,16 @@ class SceneOne extends Phaser.Scene{
         const map = this.make.tilemap({key : 'map'});
         const tileset = map.addTilesetImage('platforms','tiles');
         
-        map.createLayer('grotte',tileset, 0, 0);
+        
         platforms = map.createLayer('roche',tileset, 0, 0);
         
         platforms.setCollisionByExclusion(-1,true)
         
-        player = this.physics.add.sprite(500, 2800, 'mia_pose');
+        player = this.physics.add.sprite(300, 70, 'vinetta');
         player.body.setGravityY(gravite_joueur)
+        player.body.height = 150;
+        player.body.width = 90;
+        player.body.setOffset(((150/2)-(90/2)),0);
     
         player.setBounce(0.01);
         player.setCollideWorldBounds(false);
@@ -152,54 +174,68 @@ class SceneOne extends Phaser.Scene{
      // ANIME JOUEUR /////////////
     /////////////////////////////
     
-        /*this.anims.create({
+        this.anims.create({
             key: 'course',
-            frames: this.anims.generateFrameNumbers('mia_anime', { start: 0, end: 15 }),
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 0, end: 14 }),
             frameRate: 30,
             repeat: -1
         });
 
         this.anims.create({
             key: 'neutre',
-            frames: [ { key: 'mia_pose', frame: 2 } ],
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 41, end: 67}),
             frameRate: 10,
+            repeat: -1
         });
 
         this.anims.create({
             key: 'saut',
-            frames: this.anims.generateFrameNumbers('mia_anime', { start: 16, end: 18 }),
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 15, end: 19 }),
             frameRate: 30,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'escalade',
-            frames: this.anims.generateFrameNumbers('mia_anime', { start: 19, end: 32 }),
+            key: 'chute',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 20, end: 24 }),
             frameRate: 30,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'escalade_pause',
-            frames: [ { key: 'mia_anime', frame: 21 } ],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'attaque',
-            frames: this.anims.generateFrameNumbers('mia_anime', { start: 45, end: 47 }),
+            key: 'miseATerre',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 25, end: 29 }),
             frameRate: 30,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'degat',
-            frames: this.anims.generateFrameNumbers('mia_anime', { start: 48, end: 51 }),
+            key: 'aTerre',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 30, end: 37 }),
             frameRate: 20,
             repeat: -1
         });
+        this.anims.create({
+            key: 'liberation',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 38, end: 40 }),
+            frameRate: 20,
+            repeat: 1
+        });
 
         this.anims.create({
+            key: 'mortFlecheSol',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 68, end: 76 }),
+            frameRate: 30,
+            repeat: 0,
+        });
+
+        this.anims.create({
+            key: 'mortFleche',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 77, end: 90 }),
+            frameRate: 20,
+        });
+
+        /*this.anims.create({
             key: 'mort_pique_haut',
             frames: this.anims.generateFrameNumbers('mia_anime', { start: 33, end: 44 }),
             frameRate: 8,
@@ -239,6 +275,10 @@ class SceneOne extends Phaser.Scene{
                 .setScale(1)
                 .setGravityY(300)
         }
+        /*for (const enemie of enemieObjects) {
+            this.add.existing(new Soldat(this, enemie.x, enemie.y));
+        }*/
+
         
         this.physics.add.collider(this.enemies, platforms);
         this.physics.add.overlap(player, this.enemies, chope, null, this);
@@ -289,6 +329,30 @@ class SceneOne extends Phaser.Scene{
         //this.physics.add.collider(this.archers, platforms, tir, null, this);
         this.physics.add.collider(this.archers, platforms);
         this.physics.add.overlap(player, this.archers, chopeAcher, null, this);
+
+        /////////////////////////////   
+        // CHIMISTE /////////////////
+        ////////////////////////////
+
+        chimisteObjects = map.getObjectLayer('chimiste').objects;
+        this.chimiste = this.physics.add.group({
+            allowGravity: true
+        });
+        
+        for (const chimiste of chimisteObjects) {
+            chimisteStun = false
+            //archerX = archer.x
+            //archerY = archer.y
+            this.chimiste.create(chimiste.x, chimiste.y, 'chimiste')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+                .setGravityY(300)
+        }
+        
+        //this.physics.add.collider(this.archers, platforms, tir, null, this);
+        this.physics.add.collider(this.chimiste, platforms);
+        this.physics.add.overlap(player, this.chimiste, chopeChimiste, null, this);
         
       /////////////////////////////   
      // CONTROLE /////////////////
@@ -312,29 +376,52 @@ class SceneOne extends Phaser.Scene{
 
         
         if (nbFleche == 0 && archerStun == false){
+            for (const archer of this.archers.children.entries) {
 
-            if (player.x < archerX && nbFleche == 0){
-                fleche = this.physics.add.sprite(archerX+20,archerY,'fleche');
+                fleche = this.physics.add.sprite(archer.x+20,archer.y,'fleche');
                 fleche.body.allowGravity = false;
-                //fleche.setCollideWorldBounds(true);
                 nbFleche = 1;
-                //setTimeout(function(){flecheDestroy = false}, 500);
-                fleche.setVelocityX(-vitesseFleche);
+                if (player.x < archer.x && nbFleche == 0){
+
+                    fleche.setVelocityX(vitesseFleche);
+                }
+                else {
+                    fleche.setVelocityX(-vitesseFleche);
+                }
             }
-            else {
-                fleche = this.physics.add.sprite(archerX+20,archerY,'fleche');
-                fleche.body.allowGravity = false;
-                //fleche.setCollideWorldBounds(true);
-                nbFleche = 1;
-                //setTimeout(function(){flecheDestroy = false}, 500);
-                fleche.setVelocityX(vitesseFleche);
+            
+            
+        }
+
+        if (chimisteStun == false && chimisteAgro && gameOver == false && attrape == false){
+            
+            compteurFiole --;
+            if (compteurFiole == 0 && lancer == false){
+                lancer = true;
+                for (const chimiste of this.chimiste.children.entries) {
+                    fiole = this.physics.add.sprite(chimiste.x, chimiste.y, 'fiole');
+    
+                    if(player.x<chimiste.x){
+                        fiole.setVelocity(Phaser.Math.FloatBetween(-200, -400), Phaser.Math.FloatBetween(-200, -400));
+                        fiole.setGravityY(200);
+                    }
+                    else if(player.x>chimiste.x){
+                        fiole.setVelocity(Phaser.Math.FloatBetween(200, 400), Phaser.Math.FloatBetween(-200, -400));
+                        fiole.setGravityY(200);
+                    }
+
+                    this.physics.add.collider(fiole, platforms,fioleMur,null,this);
+                    this.physics.add.overlap(fiole, player,fiolePlayer,null, this);
+                }
+                compteurFiole = compteurFioleMax;
             }
             
         }
 
         this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-        //this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+        this.physics.add.overlap(fleche, player,flechePlayer,null, this);
         
+    
 
         if(invincible == true){
             player.setTint(0x0f3434);
@@ -349,7 +436,11 @@ class SceneOne extends Phaser.Scene{
         }
 
         if (gameOver == true){
+            player.setVelocityX(0);
             gameOvertext = this.add.text(896/2, 448/2, 'GAME OVER', { fontSize: '32px', fill: '#48E14E' }).setScrollFactor(0).setDepth(1);
+            if (mortFleche == true){
+                player.anims.play('mortFleche',true);
+            }
         }
 
         if (animeFumerFX == true){
@@ -405,6 +496,8 @@ class SceneOne extends Phaser.Scene{
             if (gameOver == false){
                 
                 player.setVelocityX(-vitesse_joueur*speed);
+                player.anims.play("course", true);
+                player.setFlipX(true);
                 
             }           
             sautGauche = false;
@@ -414,6 +507,8 @@ class SceneOne extends Phaser.Scene{
         {
             if (gameOver == false){
                 player.setVelocityX(vitesse_joueur*speed);
+                player.anims.play("course", true);
+                player.setFlipX(false);
             }
             sautDroite = false;
         }
@@ -426,17 +521,38 @@ class SceneOne extends Phaser.Scene{
 
         else //position neutre /////////////////////
         {            
-            if ( sautDroite == false && sautGauche == false){
+            if (sautDroite == false && sautGauche == false && onGround){
                 player.setVelocityX(0);
+               // player.anims.play("neutre", true);
             }
+            /*else if ( onGround){
+                player.setVelocityX(0);
+                //player.anims.play("neutre", true);
+            }*/
         }
 
                 //saut /////////////////////
         if (((cursors.up.isDown && onGround || cursors2.Z.isDown && onGround || cursors2.SPACE.isDown && onGround) && attrape == false && attrapeColosse == false) && gameOver == false )
         {
             player.setVelocityY(-vitesse_saut);
+            //player.anims.play("saut", true);
             doubleJump = false;
 
+        }
+        
+        if (player.body.velocity.y < 0 && !onGround){
+            player.anims.play("saut", true);
+        }
+        else if (player.body.velocity.y > 0 && !onGround){
+            player.anims.play("chute", true);
+        }
+
+        if (player.body.velocity.x === 0 && onGround && !gameOver){
+            player.anims.play("neutre", true);
+            //player.anims.play("mortFleche", true);
+        }
+        if (attrape && compteur > 0 && !gameOver){
+            player.anims.play("aTerre",true);
         }
               
         if ((!cursors2.Z.isDown || !cursors2.SPACE.isDown) && gameOver == false){
@@ -537,6 +653,15 @@ class SceneOne extends Phaser.Scene{
       /////////////////////////////   
      // COMPORTEMENT ENNEMIE /////
     /////////////////////////////
+
+      /////////////////////////////   
+     // ARCHER ///////////////////
+    /////////////////////////////
+        /*for (const archer of this.archers.children.entries) {
+            if (player.x < archer.x +100){
+                archer.setVelocityX(100);
+            }
+        }*/
       /////////////////////////////   
      // SOLDAT ///////////////////
     /////////////////////////////
@@ -544,29 +669,44 @@ class SceneOne extends Phaser.Scene{
     for (const enemie of this.enemies.children.entries) {
         if (enemie.body.blocked.right) {
             enemie.direction = 'LEFT';
+            
         }
 
         if (enemie.body.blocked.left) {
             enemie.direction = 'RIGHT';
         }
 
-        if (enemie.direction === 'RIGHT') {
+        if(enemie.x - player.x < 400 && enemie.x - player.x > 0 && enemie.y - player.y < 200 && enemie.y - player.y > -200 && !attrape && !enemieStun && !invincible){
+
+            enemie.setVelocityX(-vitesseSoldat);
+            
+
+        }
+        else if (player.x - enemie.x < 400 && player.x - enemie.x > 0 && enemie.y - player.y < 200 && enemie.y - player.y > -200 && !attrape && !enemieStun && !invincible){
             enemie.setVelocityX(vitesseSoldat);
             enemie.setFlipX(true);
-            if (enemieStun){
-                enemie.setVelocityX(0);
-            }
+        }
+        else if (enemie.direction === 'RIGHT') {
+            
+            enemie.setVelocityX(300);
+            enemie.setFlipX(true);
             if (attrape || enemieStun){
                 enemie.setVelocityX(0); 
-            }
-            
-        } else {
-            enemie.setVelocityX(-vitesseSoldat);
+            }          
+        } 
+        else {
+            enemie.setVelocityX(-300);
             enemie.setFlipX(false);
+            
             if (attrape || enemieStun){
                 enemie.setVelocityX(0); 
             }
         }
+        
+
+        /*if (player.x > enemie.x -200 && player.x < enemie.x+ 200){
+            enemie.setVelocityY(-200);
+        }*/
     }
       /////////////////////////////   
      // COLOSSE //////////////////
@@ -596,6 +736,38 @@ class SceneOne extends Phaser.Scene{
             colosse.setFlipX(false);
             if (attrapeColosse || colosseStun){
                 colosse.setVelocityX(0); 
+            }
+        }
+    }
+
+      /////////////////////////////   
+     // CHIMISTE /////////////////
+    /////////////////////////////
+    
+    for (const chimiste of this.chimiste.children.entries) {
+        if (chimiste.body.blocked.right) {
+            chimiste.direction = 'LEFT';
+        }
+
+        if (chimiste.body.blocked.left) {
+            chimiste.direction = 'RIGHT';
+        }
+
+        if (chimiste.direction === 'RIGHT') {
+            chimiste.setVelocityX(vitesseChimiste);
+            chimiste.setFlipX(true);
+            if (chimisteStun){
+                chimiste.setVelocityX(0);
+            }
+            if (attrape || chimisteStun || lancer){
+                chimiste.setVelocityX(0); 
+            }
+            
+        } else {
+            chimiste.setVelocityX(-vitesseChimiste);
+            chimiste.setFlipX(false);
+            if (attrape || chimisteStun || lancer){
+                chimiste.setVelocityX(0); 
             }
         }
     }
@@ -649,6 +821,7 @@ class SceneOne extends Phaser.Scene{
             attrape = true;
             compteur --;
             afficheCompteur.setText('Fe : ' + compteur);
+                
 
             if ( cursors2.E.isDown && nbFumigene >0 && compteur >0){
                 fumerFX = this.add.sprite(player.x,player.y, 'fumi');
@@ -736,6 +909,58 @@ class SceneOne extends Phaser.Scene{
             }
         }
     }
+    function chopeChimiste(player, chimiste){
+        if (attaque && attrape == false && onGround == false){
+            setTimeout(function(){chimiste.setTint(0xffffff);}, dureStun);
+            chimisteStun = true;
+            setTimeout(function(){chimisteStun = false}, dureStun);
+            chimiste.setTint(0xff0000);
+            chimisteMask = false;
+            chimisteAgro = true;
+        }
+        else if (chimisteStun == false && gameOver == false && invincible == false && attaque == false){
+            attrape = true;
+            compteur --;
+            afficheCompteur.setText('Fe : ' + compteur);
+
+            if ( cursors2.E.isDown && nbFumigene >0 && compteur >0  && chimisteMask == false){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                attrape = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+                                   
+                
+                afficheFumi.setText('Nb fumigène : ' + nbFumigene);
+                afficheCompteur.setText('Fe : ' + compteur);
+
+                setTimeout(function(){chimiste.setTint(0xffffff);}, dureStun);
+                chimisteStun = true;
+                setTimeout(function(){chimisteStun = false}, dureStun);
+                chimiste.setTint(0xff0000);
+
+
+                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
+
+                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
+                    enemieStun = true;
+                    setTimeout(function(){enemieStun = false}, dureStun);
+                    enemies.setTint(0xff0000);
+
+                }*/
+                
+            }
+            else if (compteur == 0){
+                
+                gameOver = true;
+            }
+        }
+    }
     function chopeAcher (player, archer){
         if (attaque && onGround == false){
             setTimeout(function(){archer.setTint(0xffffff);}, dureStun);
@@ -751,11 +976,28 @@ class SceneOne extends Phaser.Scene{
         fleche.body.destroy();
         nbFleche = 0;
     }
+    function fioleMur (fiole,platforms){
+        fiole.setVelocityX(0);
+        fiole.disableBody(true, true);
+        fiole.body.destroy();
+        lancer = false;
+    }
     function flechePlayer (fleche,player){
         if (invincible == false){
+            //player.anims.play("mortFleche",true);
             fleche.setVelocityX(0);
             fleche.disableBody(true, true);
             fleche.body.destroy();
+            gameOver = true;
+            mortFleche=true;
+        }
+        
+    }
+    function fiolePlayer (fiole,player){
+        if (invincible == false){
+            fiole.setVelocityX(0);
+            fiole.disableBody(true, true);
+            fiole.body.destroy();
             gameOver = true;
         }
         
