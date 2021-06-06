@@ -945,7 +945,7 @@ class SceneOne extends Phaser.Scene{
         }*/
         
     }
-    function chope(player, enemie){
+    /*function chope(player, enemie){
         if (attaque && attrape == false && onGround == false){
             setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
             enemieStun = true;
@@ -972,6 +972,53 @@ class SceneOne extends Phaser.Scene{
                 setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
                 enemieStun = true;
                 setTimeout(function(){enemieStun = false}, dureStun);
+                enemie.setTint(0xff0000);
+
+
+                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
+
+                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
+                    enemieStun = true;
+                    setTimeout(function(){enemieStun = false}, dureStun);
+                    enemies.setTint(0xff0000);
+
+                }
+                
+            }
+            else if (compteur == 0){
+                
+                gameOver = true;
+            }
+        }
+    }*/
+    function chope(player, enemie){
+        if (attaque && enemie.setVelocityX!= 0 && onGround == false){
+            setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
+            //enemieStun = true;
+            setTimeout(function(){enemie.setVelocityX(0)}, dureStun);
+            enemie.setTint(0xff0000);
+        }
+        else if (enemie.setVelocityX!= 0 && gameOver == false && invincible == false && attaque == false){
+            //attrape = true;
+            enemie.setVelocityX(0)
+            compteur --;
+                
+
+            if ( cursors2.E.isDown && nbFumigene > 0 && compteur > 0){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                //attrape = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+
+                setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
+                //enemieStun = true;
+                setTimeout(function(){enemie.setVelocityX(0)}, dureStun);
                 enemie.setTint(0xff0000);
 
 
