@@ -168,7 +168,7 @@ class SceneOne extends Phaser.Scene{
         this.load.image('barreFumi5','assets/barre_fumi/Barre_fumi_5.png');
 
         this.load.image('tiles','assets/tiles/Decors.png');
-        this.load.tilemapTiledJSON('map','assets/tiles/level.json');
+        this.load.tilemapTiledJSON('map','assets/tiles/level_Part_2.json');
 
         this.load.audio('audio_fond', 'assets/audio/music_fond.ogg')
         this.load.audio('bruit_coup', 'assets/audio/Bruit_coup.ogg')
@@ -194,7 +194,7 @@ class SceneOne extends Phaser.Scene{
         this.add.image(4128/2, 2688/2, 'parallaxe1').setScrollFactor(1.5).setDepth(2);
 
         const map = this.make.tilemap({key : 'map'});
-        const tileset = map.addTilesetImage('platforms','tiles');
+        const tileset = map.addTilesetImage('Decors','tiles');
         
         
         platforms = map.createLayer('Platforms',tileset, 0, 0).setDepth(1);
