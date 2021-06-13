@@ -1,9 +1,148 @@
-var musicConfig;
-var execution =false;
+var cursors;
+var cursors2;
+var paddle;
+var padConnected;
+var onGround ;
 
-class TesteAnime extends Phaser.Scene{
+var onGround;
+var onLeft;
+var onRight;
+
+var platforms;
+var porte;
+var fond;
+var secret;
+var zoneChargement;
+var zoneMort;
+
+var verrouille = -1;
+var position_base = false;
+var player;
+var gameOver = false;
+var gameOvertext;
+
+var restCompteurInvincible = 150;
+var compteurInvincible = restCompteurInvincible;
+var invincible  =  false  ;
+
+var sautGauche = false;
+var sautDroite = false;
+
+///////////////
+/// BOUTON /// 
+/////////////
+var buttonJouer;
+var buttonCommande;
+var buttonRetour;
+var panneauCommande;
+
+///////////////
+/// enemie /// 
+/////////////
+
+var enemieRigth;
+var enemieObjects;
+var archerObjects;
+var chimisteObjects;
+var colosseObjects;
+
+var attrapeColosse = false;
+var attrape = false;
+
+var enemieStun;
+var enemieStunFumi = false;
+var archerStun = false;
+var chimisteStun = false;
+var colosseStun = false;
+
+var vitesseColosse = 100;
+var vitesseColosseCourse = 200;
+var vitesseSoldat = 100;
+var vitesseSoldatCourse = 300;
+var vitesseChimiste = 100;
+var vitesseChimisteFuite = 200;
+var compteurMax = 60;
+var compteur = compteurMax;
+var dureStun = 10000;
+
+var fiole;
+var chimisteAgro = false;
+var chimisteFuite = false;
+var chimisteMask = true;
+var compteurFioleMax = 100;
+var compteurFiole = compteurFioleMax;
+var lancer = false;
+
+var vitesseFleche = 400;
+var fleche;
+var flecheDestroy = true;
+var nbFleche = 0;
+var mortFleche = false;
+var tir = true;
+
+var archerX;
+var archerY;
+var colosseX;
+var colosseY;
+
+//vie
+var barreFumi0;
+var barreFumi1;
+var barreFumi2;
+var barreFumi3;
+var barreFumi4;
+var barreFumi5;
+
+var barreFumiX = 200;
+var barreFumiY = 60;
+
+// joueur/////////////////
+var sautTete = false;
+var nbFumigene = 5;
+var fumigene = true;
+var attaque = false;
+var vitesse_joueur = 300;
+var vitesse_saut = 100;
+var gravite_joueur = 400;
+var vitesseAttaque = 600;
+
+var unlockDoubleJump = false;
+var doubleJump = true;
+var vitesseSautMur = 350;
+var saut = false;
+
+var jumpCD = true;
+var jumpDuration = false;
+var speed = 1;
+
+
+var fumerFX;
+var animeFumerFX = false;
+var restAnimeFumerFX = 60;
+var compteurAnimeFumerFX = restAnimeFumerFX;
+
+ // item ///
+
+clef1 = false;
+
+// texte tuto //////
+
+var tutoDeplacement;
+var textAttaque;
+var textPiolet;
+
+var afficheFumi;
+
+var afficheDroite;
+var afficheGauche;
+var afficheAttrape;
+var afficheCompteur;
+var afficheInvincible;
+var afficheAttaque;
+
+class LevelPart1 extends Phaser.Scene{
     constructor(){
-        super("TesteAnime");
+        super("LevelPart1");
     }
     init(data){
         
@@ -42,15 +181,15 @@ class TesteAnime extends Phaser.Scene{
         this.load.image('barreFumi5','assets/barre_fumi/Barre_fumi_5.png');
 
         this.load.image('tiles','assets/tiles/Decors.png');
-        this.load.tilemapTiledJSON('map','assets/tiles/Teste_anime.json');
+        this.load.tilemapTiledJSON('mapPart1','assets/tiles/level_Part_1.json');
 
-        this.load.image('tiles','assets/tiles/tile_32.png');
-        this.load.tilemapTiledJSON('map','assets/tiles/Schema_Level_4.json');
-
+        this.load.audio('audio_fond', 'assets/audio/music_fond.ogg')
+        this.load.audio('bruit_coup', 'assets/audio/Bruit_coup.ogg')
     }
     create(){
+        console.log('nbFleche =1');
         this.bruitCoup = this.sound.add('bruit_coup')
-        this.musicFond = this.sound.add('audio_fond')
+        /*this.musicFond = this.sound.add('audio_fond')
         var musicConfig = {
             mute : false,
             volume : 1,
@@ -61,126 +200,143 @@ class TesteAnime extends Phaser.Scene{
             delay : 0,
 
         }
-        this.musicFond.play(musicConfig)
+        this.musicFond.play(musicConfig)*/
 
-        //this.add.image(4800/2, 1760/2, 'parallaxe3').setScrollFactor(0.1);
-        //this.add.image(4800/2, 1760/2, 'parallaxe2').setScrollFactor(0.5);
-        //this.add.image(4800/2, 1760/2, 'parallaxe1').setScrollFactor(1.8).setDepth(2);
+        this.add.image(4128/2, 2688/2, 'parallaxe4').setScrollFactor(0.5);
+        this.add.image(4128/2, 2688/2, 'parallaxe3').setScrollFactor(0.6);
+        this.add.image(4128/2, 2688/2, 'parallaxe2').setScrollFactor(0.9);
+        this.add.image(4128/2, 2688/2, 'parallaxe1').setScrollFactor(1.5).setDepth(2);
 
-        const map = this.make.tilemap({key : 'map'});
-        const tileset = map.addTilesetImage('Decors','tiles');
-        //const tileset = map.addTilesetImage('tile_32','tiles');
+        const map = this.make.tilemap({key : 'mapPart1'});
+        const tileset = map.addTilesetImage('platforms','tiles');
         
-        platforms = map.createLayer('Platforms',tileset, 0, 0);
+        
+        platforms = map.createLayer('Platforms',tileset, 0, 0).setDepth(1);
+        porte = map.createLayer('Porte',tileset,0,0).setDepth(0.5);
+        secret = map.createLayer('Secret',tileset,0,0).setDepth(1.5);
+        fond = map.createLayer('Fond',tileset,0,0)
+        zoneMort = map.createLayer('Zone_mort',tileset,0,0)
+        zoneChargement = map.createLayer('Chargement',tileset,0,0)
         
         platforms.setCollisionByExclusion(-1,true)
+        porte.setCollisionByExclusion(-1,true)
+        zoneMort.setCollisionByExclusion(-1,true)
+        zoneChargement.setCollisionByExclusion(-1,true)
+        
+      /////////////////////////////   
+     // JOUEUR ///////////////////
+    /////////////////////////////
 
-        player = this.physics.add.sprite(200, 70, 'vinetta');
+        //player = this.physics.add.sprite(135, 2050, 'vinetta');
+        player = this.physics.add.sprite(4594, 2961, 'vinetta');
         player.body.setGravityY(gravite_joueur)
         player.body.height = 150;
         player.body.width = 50;
         player.body.setOffset(((150/2)-(50/2)),0);
-    
+        
         player.setBounce(0.01);
         player.setCollideWorldBounds(false);
         this.physics.add.collider(player, platforms);
-        
+        this.physics.add.collider(player, porte);
+        this.physics.add.collider(player, zoneMort, chute, null, this);
+        this.physics.add.collider(player, zoneChargement, changementZone, null, this);
+
+        function changementZone (player,zoneChargement){
+
+            if (player.y >= 2990 && player.x >= 4840/* && player.x <= 560*/){
+                //this.scene.start("EcranTitre");
+                this.scene.start("LevelPart2");
+                /*cursors.up.reset();
+                cursors.down.reset();
+                cursors.right.reset();
+                cursors.left.reset();*/
+            }
+        }
+
       /////////////////////////////   
      // ANIME JOUEUR /////////////
     /////////////////////////////
     
-        this.anims.create({
-            key: 'course',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 0, end: 14 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'course',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 0, end: 14 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'neutre',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 41, end: 67}),
-            frameRate: 10,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'neutre',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 41, end: 67}),
+        frameRate: 10,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'saut',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 15, end: 19 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'saut',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 15, end: 19 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'chute',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 20, end: 24 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'chute',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 20, end: 24 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'miseATerre',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 25, end: 29 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'miseATerre',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 25, end: 29 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'aTerre',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 30, end: 37 }),
-            frameRate: 20,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'liberation',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 38, end: 40 }),
-            frameRate: 20,
-            repeat: 1
-        });
+    this.anims.create({
+        key: 'aTerre',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 30, end: 37 }),
+        frameRate: 20,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'liberation',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 38, end: 40 }),
+        frameRate: 20,
+        repeat: 1
+    });
 
-        this.anims.create({
-            key: 'mortFlecheSol',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 68, end: 76 }),
-            frameRate: 30,
-            repeat: 0,
-        });
+    this.anims.create({
+        key: 'mortFlecheSol',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 68, end: 76 }),
+        frameRate: 30,
+        repeat: 0,
+    });
 
-        this.anims.create({
-            key: 'mortFleche',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 77, end: 89 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'mortColosse',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 92, end: 100 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'mortSoldat',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 101, end: 111 }),
-            frameRate: 20,
-            repeat: 0,
-        });
+    this.anims.create({
+        key: 'mortFleche',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 77, end: 89 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'mortColosse',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 92, end: 100 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'mortSoldat',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 101, end: 111 }),
+        frameRate: 20,
+        repeat: 0,
+    });
 
-        this.anims.create({
-            key: 'mortFiole',
-            frames: this.anims.generateFrameNumbers('vinetta_Mort_fiole', { start: 1, end: 21 }),
-            frameRate: 15,
-            repeat: 0,
-        });
-        /*this.anims.create({
-            key: 'mort_pique_bas',
-            frames: [ { key: 'mia_mort', frame: 11 } ],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'mort',
-            frames: this.anims.generateFrameNumbers('mia_mort', { start: 0, end: 11 }),
-            frameRate: 20,
-            repeat: -1
-        });*/
+    this.anims.create({
+        key: 'mortFiole',
+        frames: this.anims.generateFrameNumbers('vinetta_Mort_fiole', { start: 1, end: 21 }),
+        frameRate: 15,
+        repeat: 0,
+    });
 
       /////////////////////////////   
      // ENEMIES //////////////////
@@ -431,6 +587,66 @@ class TesteAnime extends Phaser.Scene{
             frameRate: 10,
             repeat: 0,
         });
+               /////////////////////////////   
+       // ITEM /////////////////////
+      /////////////////////////////
+
+        /////////////////////////////   
+        // BOMBE /////////////////
+        ////////////////////////////
+
+        const bombeObjects = map.getObjectLayer('bombe').objects;
+        this.bombe = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const bombe of bombeObjects) {
+
+            this.bombe.create(bombe.x, bombe.y, 'bombe')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.bombe ,recupBombe, null,this);
+
+        /////////////////////////////   
+        // clef /////////////////
+        ////////////////////////////
+
+        const clefObjects = map.getObjectLayer('clef').objects;
+        this.clef = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const clef of  clefObjects) {
+
+            this.clef.create(clef.x, clef.y, 'clef')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.clef ,recupClef, null,this);
+
+        /////////////////////////////   
+        // coffre /////////////////
+        ////////////////////////////
+
+        const coffreObjects = map.getObjectLayer('tresor').objects;
+        this.coffre = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const coffre of  coffreObjects) {
+
+            this.coffre.create(coffre.x, coffre.y, 'tresor')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.coffre ,recupCoffre, null,this);
         
       /////////////////////////////   
      // CONTROLE /////////////////
@@ -451,6 +667,7 @@ class TesteAnime extends Phaser.Scene{
 
     }
     update(){
+
         //this.musicFond.play()
         if(nbFumigene === 5)
         {   
@@ -494,11 +711,7 @@ class TesteAnime extends Phaser.Scene{
             barreFumi0 = this.add.image(barreFumiX,barreFumiY,'barreFumi0') 
                 .setDepth(2)
                 .setScrollFactor(0);
-        }
-
-        
-
-        
+        }    
         
     
 
@@ -582,6 +795,7 @@ class TesteAnime extends Phaser.Scene{
         
         else if ((cursors.right.isDown && sautDroite == false || cursors2.D.isDown)&& attrape == false)
         {
+
             if (gameOver == false){
                 player.setVelocityX(vitesse_joueur*speed);
                 player.anims.play("course", true);
@@ -1129,31 +1343,18 @@ class TesteAnime extends Phaser.Scene{
         }
         
     }
-    /*if (!chimisteStun && !gameOver){
-            
-        compteurFiole --;
-        if (compteurFiole == 0 && lancer == false){
-            lancer = true;
-            for (const chimiste of this.chimiste.children.entries) {
-                fiole = this.physics.add.sprite(chimiste.x, chimiste.y, 'fiole');
-
-                if(player.x < chimiste.x){
-                    fiole.setVelocity(Phaser.Math.FloatBetween(-200, -400), Phaser.Math.FloatBetween(-200, -400));
-                    fiole.setGravityY(200);
-                }
-                else if(player.x > chimiste.x){
-                    fiole.setVelocity(Phaser.Math.FloatBetween(200, 400), Phaser.Math.FloatBetween(-200, -400));
-                    fiole.setGravityY(200);
-                }
-
-                this.physics.add.collider(fiole, platforms,fioleMur,null,this);
-                this.physics.add.overlap(fiole, player,fiolePlayer,null, this);
-            }
-            compteurFiole = compteurFioleMax;
-        }
-        
+    
+    /*if (player.x < archerX){
+        this.felche.setVelocityX(100);
     }*/
-
+    
+        /*else if (attaque){
+            setTimeout(function(){this.enemies.setTint(0xffffff);}, dureStun);
+            enemieStun = true;
+            setTimeout(function(){enemieStun = false}, dureStun);
+            this.enemies.setTint(0xff0000);
+        }*/
+        
     }
         
         /*if (onGround) {
@@ -1180,6 +1381,324 @@ class TesteAnime extends Phaser.Scene{
             }
         }*/
         
-    
-    
+    } 
+    function chope(player, enemie){
+        if (attaque && enemie.chope == false && onGround == false){
+            setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
+            enemie.stun = true;
+            enemie.anims.play('soldatStunAtkBoucle', true);
+            setTimeout(function(){enemie.stun = false}, dureStun);
+            enemie.setTint(0xff0000);
+        }
+        else if (enemie.stun == false && gameOver == false && invincible == false && attaque == false){
+            attrape = true;
+            enemie.chope = true;
+            compteur --;
+            player.setVelocityX(0);
+            if (onGround){
+                enemie.anims.play('soldatExecution',true);
+            }
+                
+
+            if ( cursors2.E.isDown && nbFumigene > 0 && compteur > 0){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                attrape = false;
+                enemie.chope = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+
+                setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
+                enemie.stun = true;
+                enemie.anims.play('soldatStunAtkBoucle', true);
+                setTimeout(function(){enemie.stun = false}, dureStun);
+                enemie.setTint(0xff0000);
+
+
+                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
+
+                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
+                    enemieStun = true;
+                    setTimeout(function(){enemieStun = false}, dureStun);
+                    enemies.setTint(0xff0000);
+
+                }*/
+                
+            }
+            else if (compteur == 0){
+                
+                gameOver = true;
+                player.anims.play('mortSoldat',true);
+            }
+        }
+    } 
+    /*function chope(player, enemie){
+        if (attaque && enemie.setVelocityX!= 0 && onGround == false){
+            setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
+            //enemieStun = true;
+            setTimeout(function(){enemie.setVelocityX(0)}, dureStun);
+            enemie.setTint(0xff0000);
+        }
+        else if (enemie.setVelocityX!= 0 && gameOver == false && invincible == false && attaque == false){
+            //attrape = true;
+            enemie.setVelocityX(0)
+            compteur --;
+                
+
+            if ( cursors2.E.isDown && nbFumigene > 0 && compteur > 0){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                //attrape = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+
+                setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
+                //enemieStun = true;
+                setTimeout(function(){enemie.setVelocityX(0)}, dureStun);
+                enemie.setTint(0xff0000);
+
+
+                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
+
+                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
+                    enemieStun = true;
+                    setTimeout(function(){enemieStun = false}, dureStun);
+                    enemies.setTint(0xff0000);
+
+                }
+                
+            }
+            else if (compteur == 0){
+                
+                gameOver = true;
+            }
+        }
+    }*/
+    function chopeColosse(player, colosse){
+        if (attaque && attrape == false && onGround == false){
+            sautTete = true;
+            player.setVelocityY(-vitesse_saut/2);
+            colosse.anims.play('colosseRebond',true);
+        }
+
+        if (colosse.stun == false && gameOver == false && invincible == false && sautTete == false){
+            colosse.chope = true;
+            attrape = true;
+            compteur --;
+            player.setVelocityX(0);
+            if (onGround){
+                colosse.anims.play('colosseExecution',true);
+            }
+            
+
+            if ( cursors2.E.isDown && nbFumigene >0 && compteur >0){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                colosse.chope = false;
+                attrape = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+
+                setTimeout(function(){colosse.setTint(0xffffff);}, dureStun);
+                colosse.stun = true;
+                setTimeout(function(){colosse.stun = false}, dureStun);
+                colosse.setTint(0xff0000);
+
+
+                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
+
+                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
+                    enemieStun = true;
+                    setTimeout(function(){enemieStun = false}, dureStun);
+                    enemies.setTint(0xff0000);
+
+                }*/
+                
+            }
+            else if (compteur == 0){
+                gameOver = true;
+                player.anims.play("mortColosse", true);
+            }
+        }
     }
+    function chopeChimiste(player, chimiste){
+        if (attaque && attrape == false && onGround == false){
+            setTimeout(function(){chimiste.setTint(0xffffff);}, dureStun);
+            
+            chimiste.stun = true;
+            setTimeout(function(){chimiste.stun = false}, dureStun);
+            chimiste.setTint(0xff0000);
+        }
+        /*else if (chimisteStun == false && gameOver == false && invincible == false && attaque == false){
+            attrape = true;
+            compteur --;
+            player.setVelocityX(0);
+            
+
+            if ( cursors2.E.isDown && nbFumigene > 0 && compteur >0  && chimisteMask == false){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                attrape = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+
+                setTimeout(function(){chimiste.setTint(0xffffff);}, dureStun);
+                chimisteStun = true;
+                setTimeout(function(){chimisteStun = false}, dureStun);
+                chimiste.setTint(0xff0000);
+                
+            }
+            else if (compteur == 0){
+                
+                gameOver = true;
+            }
+        }*/
+    }
+    function chopeAcher (player, archer){
+        if (attaque && onGround == false){
+            setTimeout(function(){archer.setTint(0xffffff);}, dureStun);
+            archer.stun = true;
+            
+            archer.anims.play('TireurStun',true);
+            setTimeout(function(){archer.stun = false}, dureStun);
+            archer.setTint(0xff0000);
+        }
+        if (archer.stun == false && gameOver == false && invincible == false && attaque == false){
+            player.setVelocityX(0);
+            //archer.tir = 1
+            attrape = true;
+            
+            if (onGround && attrape){
+                archer.anims.play('TireurExecution',true);
+                compteur --;
+            }
+            
+
+            if ( cursors2.E.isDown && nbFumigene >0 && compteur > 0){
+                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                animeFumerFX = true;
+                
+                nbFumigene --;
+                attrape = false;
+                compteur = compteurMax;
+                invincible = true;
+                
+                //setTimeout(function(){invincible = true;}, 60);
+                //player.setTint(0xff0000);
+
+                setTimeout(function(){archer.setTint(0xffffff);}, dureStun);
+                archer.stun = true;
+                archer.anims.play('TireurStun',true);
+                setTimeout(function(){archer.stun = false}, dureStun);
+                archer.setTint(0xff0000);
+                //archer.tir = 0
+            }
+            else if (compteur == 0){
+                
+                gameOver = true;
+                player.anims.play('mortFlecheSol',true);
+            }
+        }
+        
+    }
+    function flecheMur (fleche,platforms){
+        fleche.setVelocityX(0);
+        fleche.disableBody(true, true);
+        fleche.body.destroy();
+        //nbFleche = 0;
+    }
+    function fioleMur (fiole,platforms){
+        fiole.setVelocityX(0);
+        fiole.disableBody(true, true);
+        fiole.body.destroy();
+        //lancer = false;
+    }
+    function flechePlayer (fleche,player){
+        if (invincible == false){
+
+            if (!gameOver){
+                if (player.x < fleche.x){
+                    player.anims.play("mortFleche", true);
+                    player.setFlipX(false);
+                }
+                else if (player.x > fleche.x){
+                    player.anims.play("mortFleche", true);
+                    player.setFlipX(true);
+                }
+            }
+            fleche.setVelocityX(0);
+            fleche.disableBody(false, true);
+            fleche.body.destroy();
+            gameOver = true;
+            mortFleche=true;
+        }
+        
+    }
+    function fiolePlayer (fiole,player){
+        if (invincible == false){
+            if (!gameOver){
+                if (player.x < fiole.x){
+                    player.anims.play("mortFiole", true);
+                    player.setFlipX(false);
+                }
+                else if (player.x > fiole.x){
+                    player.anims.play("mortFiole", true);
+                    player.setFlipX(true);
+                }
+            }
+            
+            fiole.setVelocityX(0);
+            fiole.disableBody(true, true);
+            fiole.body.destroy();
+            gameOver = true;
+        } 
+    }
+
+    function recupBombe (player,bombe){
+        if (nbFumigene < 5){
+            bombe.disableBody(true, true);
+            bombe.body.destroy();
+            nbFumigene += 1;
+        }
+    }
+    function recupClef (player,clef){
+        porte.setCollisionByExclusion(0,true)
+        clef.disableBody(true, true);
+        clef.body.destroy();
+        clef1 = true;
+    }
+    function recupCoffre (player,coffre){
+        
+        coffre.disableBody(true, true);
+        coffre.body.destroy();
+
+    }
+    function chute (player,zoneMort){
+        
+        gameOver = true;
+        player.body.destroy(true,true)
+        player.disableBody(true, true);
+
+    } 
+
+    

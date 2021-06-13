@@ -1,9 +1,6 @@
-var musicConfig;
-var execution =false;
-
-class TesteAnime extends Phaser.Scene{
+class LevelPart3 extends Phaser.Scene{
     constructor(){
-        super("TesteAnime");
+        super("LevelPart3");
     }
     init(data){
         
@@ -42,15 +39,15 @@ class TesteAnime extends Phaser.Scene{
         this.load.image('barreFumi5','assets/barre_fumi/Barre_fumi_5.png');
 
         this.load.image('tiles','assets/tiles/Decors.png');
-        this.load.tilemapTiledJSON('map','assets/tiles/Teste_anime.json');
+        this.load.tilemapTiledJSON('mapPart3','assets/tiles/level_Part_3.json');
 
-        this.load.image('tiles','assets/tiles/tile_32.png');
-        this.load.tilemapTiledJSON('map','assets/tiles/Schema_Level_4.json');
-
+        this.load.audio('audio_fond', 'assets/audio/music_fond.ogg')
+        this.load.audio('bruit_coup', 'assets/audio/Bruit_coup.ogg')
     }
     create(){
+        console.log('nbFleche =1');
         this.bruitCoup = this.sound.add('bruit_coup')
-        this.musicFond = this.sound.add('audio_fond')
+        /*this.musicFond = this.sound.add('audio_fond')
         var musicConfig = {
             mute : false,
             volume : 1,
@@ -61,126 +58,143 @@ class TesteAnime extends Phaser.Scene{
             delay : 0,
 
         }
-        this.musicFond.play(musicConfig)
+        this.musicFond.play(musicConfig)*/
 
-        //this.add.image(4800/2, 1760/2, 'parallaxe3').setScrollFactor(0.1);
-        //this.add.image(4800/2, 1760/2, 'parallaxe2').setScrollFactor(0.5);
-        //this.add.image(4800/2, 1760/2, 'parallaxe1').setScrollFactor(1.8).setDepth(2);
+        this.add.image(4128/2, 2688/2, 'parallaxe4').setScrollFactor(0.5);
+        this.add.image(4128/2, 2688/2, 'parallaxe3').setScrollFactor(0.6);
+        this.add.image(4128/2, 2688/2, 'parallaxe2').setScrollFactor(0.9);
+        this.add.image(4128/2, 2688/2, 'parallaxe1').setScrollFactor(1.5).setDepth(2);
 
-        const map = this.make.tilemap({key : 'map'});
+        const map = this.make.tilemap({key : 'mapPart3'});
         const tileset = map.addTilesetImage('Decors','tiles');
-        //const tileset = map.addTilesetImage('tile_32','tiles');
         
-        platforms = map.createLayer('Platforms',tileset, 0, 0);
+        
+        platforms = map.createLayer('Platforms',tileset, 0, 0).setDepth(1);
+        porte = map.createLayer('Porte',tileset,0,0).setDepth(0.5);
+        secret = map.createLayer('Secret',tileset,0,0).setDepth(1.5);
+        fond = map.createLayer('Fond',tileset,0,0)
+        zoneMort = map.createLayer('Zone_mort',tileset,0,0)
+        zoneChargement = map.createLayer('Chargement',tileset,0,0)
         
         platforms.setCollisionByExclusion(-1,true)
+        porte.setCollisionByExclusion(-1,true)
+        zoneMort.setCollisionByExclusion(-1,true)
+        zoneChargement.setCollisionByExclusion(-1,true)
+        
+      /////////////////////////////   
+     // JOUEUR ///////////////////
+    /////////////////////////////
 
-        player = this.physics.add.sprite(200, 70, 'vinetta');
+        player = this.physics.add.sprite(150, 225, 'vinetta');
+        //player = this.physics.add.sprite(3720, 1400, 'vinetta');
         player.body.setGravityY(gravite_joueur)
         player.body.height = 150;
         player.body.width = 50;
         player.body.setOffset(((150/2)-(50/2)),0);
-    
+        
         player.setBounce(0.01);
         player.setCollideWorldBounds(false);
         this.physics.add.collider(player, platforms);
-        
+        this.physics.add.collider(player, porte);
+        this.physics.add.collider(player, zoneMort, chute, null, this);
+        this.physics.add.collider(player, zoneChargement, changementZone, null, this);
+
+        function changementZone (player,zoneChargement){
+
+            if (player.y >= 1357 && player.x >= 3724){
+                //this.scene.start("EcranTitre");
+                this.scene.start("TesteAnime");
+                /*cursors.up.reset();
+                cursors.down.reset();
+                cursors.right.reset();
+                cursors.left.reset();*/
+            }
+        }
+
       /////////////////////////////   
      // ANIME JOUEUR /////////////
     /////////////////////////////
     
-        this.anims.create({
-            key: 'course',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 0, end: 14 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'course',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 0, end: 14 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'neutre',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 41, end: 67}),
-            frameRate: 10,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'neutre',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 41, end: 67}),
+        frameRate: 10,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'saut',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 15, end: 19 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'saut',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 15, end: 19 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'chute',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 20, end: 24 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'chute',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 20, end: 24 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'miseATerre',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 25, end: 29 }),
-            frameRate: 30,
-            repeat: -1
-        });
+    this.anims.create({
+        key: 'miseATerre',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 25, end: 29 }),
+        frameRate: 30,
+        repeat: -1
+    });
 
-        this.anims.create({
-            key: 'aTerre',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 30, end: 37 }),
-            frameRate: 20,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'liberation',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 38, end: 40 }),
-            frameRate: 20,
-            repeat: 1
-        });
+    this.anims.create({
+        key: 'aTerre',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 30, end: 37 }),
+        frameRate: 20,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'liberation',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 38, end: 40 }),
+        frameRate: 20,
+        repeat: 1
+    });
 
-        this.anims.create({
-            key: 'mortFlecheSol',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 68, end: 76 }),
-            frameRate: 30,
-            repeat: 0,
-        });
+    this.anims.create({
+        key: 'mortFlecheSol',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 68, end: 76 }),
+        frameRate: 30,
+        repeat: 0,
+    });
 
-        this.anims.create({
-            key: 'mortFleche',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 77, end: 89 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'mortColosse',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 92, end: 100 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'mortSoldat',
-            frames: this.anims.generateFrameNumbers('vinetta', { start: 101, end: 111 }),
-            frameRate: 20,
-            repeat: 0,
-        });
+    this.anims.create({
+        key: 'mortFleche',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 77, end: 89 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'mortColosse',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 92, end: 100 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'mortSoldat',
+        frames: this.anims.generateFrameNumbers('vinetta', { start: 101, end: 111 }),
+        frameRate: 20,
+        repeat: 0,
+    });
 
-        this.anims.create({
-            key: 'mortFiole',
-            frames: this.anims.generateFrameNumbers('vinetta_Mort_fiole', { start: 1, end: 21 }),
-            frameRate: 15,
-            repeat: 0,
-        });
-        /*this.anims.create({
-            key: 'mort_pique_bas',
-            frames: [ { key: 'mia_mort', frame: 11 } ],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'mort',
-            frames: this.anims.generateFrameNumbers('mia_mort', { start: 0, end: 11 }),
-            frameRate: 20,
-            repeat: -1
-        });*/
+    this.anims.create({
+        key: 'mortFiole',
+        frames: this.anims.generateFrameNumbers('vinetta_Mort_fiole', { start: 1, end: 21 }),
+        frameRate: 15,
+        repeat: 0,
+    });
 
       /////////////////////////////   
      // ENEMIES //////////////////
@@ -431,6 +445,66 @@ class TesteAnime extends Phaser.Scene{
             frameRate: 10,
             repeat: 0,
         });
+               /////////////////////////////   
+       // ITEM /////////////////////
+      /////////////////////////////
+
+        /////////////////////////////   
+        // BOMBE /////////////////
+        ////////////////////////////
+
+        const bombeObjects = map.getObjectLayer('bombe').objects;
+        this.bombe = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const bombe of bombeObjects) {
+
+            this.bombe.create(bombe.x, bombe.y, 'bombe')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.bombe ,recupBombe, null,this);
+
+        /////////////////////////////   
+        // clef /////////////////
+        ////////////////////////////
+
+        const clefObjects = map.getObjectLayer('clef').objects;
+        this.clef = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const clef of  clefObjects) {
+
+            this.clef.create(clef.x, clef.y, 'clef')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.clef ,recupClef, null,this);
+
+        /////////////////////////////   
+        // coffre /////////////////
+        ////////////////////////////
+
+        const coffreObjects = map.getObjectLayer('tresor').objects;
+        this.coffre = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const coffre of  coffreObjects) {
+
+            this.coffre.create(coffre.x, coffre.y, 'tresor')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.coffre ,recupCoffre, null,this);
         
       /////////////////////////////   
      // CONTROLE /////////////////
@@ -451,6 +525,7 @@ class TesteAnime extends Phaser.Scene{
 
     }
     update(){
+
         //this.musicFond.play()
         if(nbFumigene === 5)
         {   
@@ -494,11 +569,7 @@ class TesteAnime extends Phaser.Scene{
             barreFumi0 = this.add.image(barreFumiX,barreFumiY,'barreFumi0') 
                 .setDepth(2)
                 .setScrollFactor(0);
-        }
-
-        
-
-        
+        }    
         
     
 
@@ -519,7 +590,6 @@ class TesteAnime extends Phaser.Scene{
             if (cursors2.R.isDown){
                 this.scene.restart();
                 gameOver = false;
-                console.log('nbFleche =1');
             }
             /*if (mortFleche == true){
                 player.anims.play('mortFleche',true);
@@ -582,6 +652,9 @@ class TesteAnime extends Phaser.Scene{
         
         else if ((cursors.right.isDown && sautDroite == false || cursors2.D.isDown)&& attrape == false)
         {
+            console.log(player.x);
+            console.log(player.y);
+
             if (gameOver == false){
                 player.setVelocityX(vitesse_joueur*speed);
                 player.anims.play("course", true);
@@ -1129,31 +1202,18 @@ class TesteAnime extends Phaser.Scene{
         }
         
     }
-    /*if (!chimisteStun && !gameOver){
-            
-        compteurFiole --;
-        if (compteurFiole == 0 && lancer == false){
-            lancer = true;
-            for (const chimiste of this.chimiste.children.entries) {
-                fiole = this.physics.add.sprite(chimiste.x, chimiste.y, 'fiole');
-
-                if(player.x < chimiste.x){
-                    fiole.setVelocity(Phaser.Math.FloatBetween(-200, -400), Phaser.Math.FloatBetween(-200, -400));
-                    fiole.setGravityY(200);
-                }
-                else if(player.x > chimiste.x){
-                    fiole.setVelocity(Phaser.Math.FloatBetween(200, 400), Phaser.Math.FloatBetween(-200, -400));
-                    fiole.setGravityY(200);
-                }
-
-                this.physics.add.collider(fiole, platforms,fioleMur,null,this);
-                this.physics.add.overlap(fiole, player,fiolePlayer,null, this);
-            }
-            compteurFiole = compteurFioleMax;
-        }
-        
+    
+    /*if (player.x < archerX){
+        this.felche.setVelocityX(100);
     }*/
-
+    
+        /*else if (attaque){
+            setTimeout(function(){this.enemies.setTint(0xffffff);}, dureStun);
+            enemieStun = true;
+            setTimeout(function(){enemieStun = false}, dureStun);
+            this.enemies.setTint(0xff0000);
+        }*/
+        
     }
         
         /*if (onGround) {
@@ -1180,6 +1240,6 @@ class TesteAnime extends Phaser.Scene{
             }
         }*/
         
+    } 
+
     
-    
-    }
