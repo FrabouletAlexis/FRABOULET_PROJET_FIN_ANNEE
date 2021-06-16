@@ -15,14 +15,16 @@ class EcranTitre extends Phaser.Scene{
         this.load.spritesheet('bontonCommande','assets/menu/Bouton_commande.png', { frameWidth: 208, frameHeight: 65 });
         this.load.image('ecranTitre','assets/menu/ecran_titre.png');
         this.load.image('panneauCommande','assets/menu/panneau_commande.png');
-        this.load.spritesheet('boutonRetour','assets/menu/bouton_retour.png', { frameWidth: 208, frameHeight: 65 });
-        this.load.image('parallaxe3','assets/parallaxe/parallaxe_3.png');
+        
+        
+        /*this.load.image('parallaxe3','assets/parallaxe/parallaxe_3.png');
         this.load.image('parallaxe2','assets/parallaxe/parallaxe_2.png');
         this.load.image('parallaxe1','assets/parallaxe/parallaxe_1.png');
 
         this.load.spritesheet('vinetta', 'assets/spritesheet/spritesheet_Vinetta.png', { frameWidth: 160, frameHeight: 150 });
         //this.load.spritesheet('vinetta_neutre', 'assets/spritesheet/spritesheet_Vinetta_neutre.png', { frameWidth: 84, frameHeight: 150 });
         //this.load.spritesheet('mia_mort', 'assets/spritesheet/mia_mort.png', { frameWidth: 210, frameHeight: 150 });
+        this.load.spritesheet('vinetta_Mort_fiole', 'assets/spritesheet/spritesheet_Vinetta_Mort_fiole.png', { frameWidth: 235, frameHeight: 150 });
         this.load.spritesheet('soldat', 'assets/spritesheet/spritesheet_soldat.png', { frameWidth: 90, frameHeight: 150 });
         this.load.spritesheet('colosse', 'assets/spritesheet/spritesheet_colosse.png', { frameWidth: 120, frameHeight: 160 });
         this.load.spritesheet('archer', 'assets/spritesheet/spritesheet_tireur.png', { frameWidth: 87, frameHeight: 150 });
@@ -46,7 +48,7 @@ class EcranTitre extends Phaser.Scene{
         this.load.image('tiles','assets/tiles/Decors.png');
         this.load.tilemapTiledJSON('map','assets/tiles/level.json');
         this.load.image('tiles','assets/tiles/tile_32.png');
-        this.load.tilemapTiledJSON('map','assets/tiles/level_teste.json');
+        this.load.tilemapTiledJSON('map','assets/tiles/level_teste.json');*/
              
     }
     create(){
@@ -114,16 +116,19 @@ class EcranTitre extends Phaser.Scene{
                 buttonJouer.anims.play('Jouer',true);
     
             });
-    
             buttonJouer.on('pointerdown', function(){
     
                 //this.scene.start("LevelTeste");
-                this.scene.start("SceneOne");
+                this.scene.start("LevelPart1");
+                console.log('Charge level');
     
             }, this)
+    
+           
         
 
     }
-    update(){}
+    update(){
+    }
 
 }

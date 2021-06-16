@@ -7,7 +7,10 @@
     <script type="text/javascript" src="Soldat.js"></script>
     <script src="EcranTitre.js"></script>
     <script src="EcranCommande.js"></script>
-    <script src="SceneOne.js"></script>
+    <script src="LevelPart1.js"></script>
+    <script src="LevelPart2.js"></script>
+    <script src="LevelPart3.js"></script>
+    <script src="LevelPart4.js"></script>
     <script src="SceneTwo.js"></script>
     <script src="LevelTeste.js"></script>
     <script src="TesteAnime.js"></script>
@@ -37,7 +40,7 @@ var config = {
             debug: true
         }
     },
-    scene: [ SceneOne,TesteAnime,EcranTitre,TesteClass,EcranCommande,LevelTeste ]
+    scene: [ TesteAnime,LevelPart1,EcranTitre,LevelPart4,LevelPart3,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
 };
 
 var game = new Phaser.Game(config);
