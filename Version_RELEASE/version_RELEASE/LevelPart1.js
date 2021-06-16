@@ -14,6 +14,7 @@ var fond;
 var secret;
 var zoneChargement;
 var zoneMort;
+var marque
 
 var verrouille = -1;
 var position_base = false;
@@ -36,6 +37,15 @@ var buttonCommande;
 var buttonRetour;
 var panneauCommande;
 
+var buttonPause;
+var menuPause;
+
+var flecheDroite;
+var flecheGauche;
+var flecheHaut;
+var flecheBas;
+var buttonFumi;
+
 ///////////////
 /// enemie /// 
 /////////////
@@ -48,6 +58,11 @@ var colosseObjects;
 
 var attrapeColosse = false;
 var attrape = false;
+
+var detectionArcher = 640;
+var detectionSoldat = 400;
+var detectionColosse = 200;
+var detectionChimiste = 400;
 
 var enemieStun;
 var enemieStunFumi = false;
@@ -118,7 +133,7 @@ var speed = 1;
 
 var fumerFX;
 var animeFumerFX = false;
-var restAnimeFumerFX = 60;
+var restAnimeFumerFX = 1000;
 var compteurAnimeFumerFX = restAnimeFumerFX;
 
  // item ///
@@ -163,8 +178,6 @@ class LevelPart1 extends Phaser.Scene{
         this.load.spritesheet('colosse', 'assets/spritesheet/spritesheet_colosse.png', { frameWidth: 120, frameHeight: 160 });
         this.load.spritesheet('archer', 'assets/spritesheet/spritesheet_tireur.png', { frameWidth: 87, frameHeight: 150 });
         this.load.spritesheet('chimiste', 'assets/spritesheet/spritesheet_chimiste.png', { frameWidth: 90, frameHeight: 150 });
-        
-        this.load.image('flèche','assets/spritesheet/fleche.png');
 
         this.load.image('fumi','assets/FX/teste_fumi.png');
         this.load.image('fleche','assets/spritesheet/fleche.png');
@@ -172,6 +185,7 @@ class LevelPart1 extends Phaser.Scene{
         this.load.image('bombe','assets/item/Bombe_Loot.png');
         this.load.image('clef','assets/item/clef.png');
         this.load.image('tresor','assets/item/Coffre_loot.png');
+        this.load.image('porte','assets/item/Porte_deverouille.png');
         
         this.load.image('barreFumi0','assets/barre_fumi/Barre_fumi_0.png');
         this.load.image('barreFumi1','assets/barre_fumi/Barre_fumi_1.png');
@@ -217,7 +231,8 @@ class LevelPart1 extends Phaser.Scene{
         fond = map.createLayer('Fond',tileset,0,0)
         zoneMort = map.createLayer('Zone_mort',tileset,0,0)
         zoneChargement = map.createLayer('Chargement',tileset,0,0)
-        
+        marque = map.createLayer('Marque',tileset,0,0)
+
         platforms.setCollisionByExclusion(-1,true)
         porte.setCollisionByExclusion(-1,true)
         zoneMort.setCollisionByExclusion(-1,true)
@@ -227,8 +242,8 @@ class LevelPart1 extends Phaser.Scene{
      // JOUEUR ///////////////////
     /////////////////////////////
 
-        //player = this.physics.add.sprite(135, 2050, 'vinetta');
-        player = this.physics.add.sprite(4594, 2961, 'vinetta');
+        player = this.physics.add.sprite(135, 2050, 'vinetta').setDepth(3);
+        //player = this.physics.add.sprite(4594, 2961, 'vinetta').setDepth(3);
         player.body.setGravityY(gravite_joueur)
         player.body.height = 150;
         player.body.width = 50;
@@ -587,7 +602,8 @@ class LevelPart1 extends Phaser.Scene{
             frameRate: 10,
             repeat: 0,
         });
-               /////////////////////////////   
+        
+        /////////////////////////////   
        // ITEM /////////////////////
       /////////////////////////////
 
@@ -647,6 +663,25 @@ class LevelPart1 extends Phaser.Scene{
         }
 
         this.physics.add.overlap(player, this.coffre ,recupCoffre, null,this);
+
+        /////////////////////////////   
+        // Porte ///////////////////
+        ////////////////////////////
+
+        const porteObjects = map.getObjectLayer('porte').objects;
+        this.porte = this.physics.add.group({
+            allowGravity: false
+        });
+        
+        for (const porte of  porteObjects) {
+
+            this.porte.create(porte.x, porte.y, 'porte')
+                .setOrigin(0.5,0.5)
+                .setDepth(1)
+                .setScale(1)
+        }
+
+        this.physics.add.overlap(player, this.porte ,recupCoffre, null,this);
         
       /////////////////////////////   
      // CONTROLE /////////////////
@@ -734,9 +769,7 @@ class LevelPart1 extends Phaser.Scene{
                 gameOver = false;
                 console.log('nbFleche =1');
             }
-            /*if (mortFleche == true){
-                player.anims.play('mortFleche',true);
-            }*/
+
         }
 
         if (animeFumerFX == true){
@@ -749,10 +782,6 @@ class LevelPart1 extends Phaser.Scene{
                 
             }
         }
-        /*if (enemieStun){
-            setTimeout(function(){enemieStun = false}, 1000);
-            this.enemies.setTint(0xffffff);
-        }*/
         const dash = Phaser.Input.Keyboard.JustDown(cursors2.SHIFT);
         const libre = Phaser.Input.Keyboard.JustDown(cursors2.E);
         if (nbFumigene <= 0){
@@ -799,7 +828,6 @@ class LevelPart1 extends Phaser.Scene{
             if (gameOver == false){
                 player.setVelocityX(vitesse_joueur*speed);
                 player.anims.play("course", true);
-                //player.anims.play("colosseExecution", true);
                 player.setFlipX(false);
             }
             sautDroite = false;
@@ -814,19 +842,15 @@ class LevelPart1 extends Phaser.Scene{
         {            
             if (sautDroite == false && sautGauche == false && onGround){
                 player.setVelocityX(0);
-               // player.anims.play("neutre", true);
+
             }
-            /*else if ( onGround){
-                player.setVelocityX(0);
-                //player.anims.play("neutre", true);
-            }*/
+
         }
 
                 //saut /////////////////////
         if (((cursors.up.isDown && onGround || cursors2.Z.isDown && onGround || cursors2.SPACE.isDown && onGround) && attrape == false) && gameOver == false )
         {
             player.setVelocityY(-vitesse_saut);
-            //player.anims.play("saut", true);
             doubleJump = false;
 
         }
@@ -840,7 +864,6 @@ class LevelPart1 extends Phaser.Scene{
 
         if (player.body.velocity.x === 0 && onGround && !gameOver){
             player.anims.play("neutre", true);
-            //player.anims.play("mortFiole", true);
         }
         if (attrape && compteur > 0 && !gameOver){
             player.anims.play("aTerre",true);
@@ -872,7 +895,6 @@ class LevelPart1 extends Phaser.Scene{
             
             player.setVelocityY(-vitesse_saut);
             player.setVelocityX(vitesse_joueur);
-            //player.direction == 'LEFT'; 
         }
         
         if (sautMur && sautDroite) {
@@ -880,7 +902,6 @@ class LevelPart1 extends Phaser.Scene{
             player.setVelocityY(-vitesse_saut);
             player.setVelocityX(-vitesse_joueur);
             
-            //player.direction == 'RIGHT'; 
         }
         
         ///////////////////////////////////////
@@ -904,7 +925,6 @@ class LevelPart1 extends Phaser.Scene{
             if (this.enemies.y <= player.y+100 && this.enemies.y >= player.y-100 && this.enemies.x <= player.x+100 && this.enemies.x >= player.x-100){
                 attrape = false;
                 enemie.stun = true;
-                this.enemies.setTint(0xff0000);
                  
             }
         }
@@ -925,7 +945,6 @@ class LevelPart1 extends Phaser.Scene{
             if (this.enemies.y <= player.y+100 && this.enemies.y >= player.y-100 && this.enemies.x <= player.x+100 && this.enemies.x >= player.x-100){
                 attrape = false;
                 enemieStun = true;
-                this.enemies.setTint(0xff0000); 
             }
         }      
         
@@ -940,53 +959,51 @@ class LevelPart1 extends Phaser.Scene{
     /////////////////////////////
 
         
-        for (const archer of this.archers.children.entries) {
+    for (const archer of this.archers.children.entries) {
 
-            if (archer.tir == 0 && archer.stun == false){
-                
-
-                if (archer.tir == 0 && !archer.stun && archer.x - player.x < 400 && archer.x - player.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
-                    
-                    fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
-                    fleche.body.allowGravity = false;
-                    fleche.setFlipX(false);
-                    archer.tir = 1;
-                    //console.log('nbFleche =1');
-                
-                    fleche.setVelocityX( -vitesseFleche);
-                    archer.anims.play('TireurTir',true);
-                    archer.setFlipX(false);
-
-                    setTimeout(function(){archer.tir = 0;}, 1000);
-                    archer.tir = 1;
-
-                    this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-                    this.physics.add.overlap(fleche, player,flechePlayer,null, this);
-                } 
-                else if (archer.tir == 0 && !archer.stun && player.x - archer.x < 400 && player.x - archer.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
-                    
-                    fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
-                    fleche.body.allowGravity = false;
-                    fleche.setFlipX(true);
-                    archer.tir = 1;
-                    //console.log('nbFleche =1');
+        if (archer.tir == 0 && archer.stun == false){
             
-                    fleche.setVelocityX( vitesseFleche);
-                    archer.anims.play('TireurTir',true);
-                    archer.setFlipX(true);
 
-                    setTimeout(function(){archer.tir = 0;}, 1000);
-                    archer.tir = 1;
+            if (archer.tir == 0 && !archer.stun && archer.x - player.x < detectionArcher && archer.x - player.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
+                
+                fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
+                fleche.body.allowGravity = false;
+                fleche.setFlipX(false);
+                archer.tir = 1;
+            
+                fleche.setVelocityX( -vitesseFleche);
+                archer.anims.play('TireurTir',true);
+                archer.setFlipX(false);
 
-                    this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-                    this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+                setTimeout(function(){archer.tir = 0;}, 1000);
+                archer.tir = 1;
 
-                }
-                else if (!attrape){
-                    archer.anims.play('TireurNeutre',true);
-                }
+                this.physics.add.collider(fleche, platforms, flecheMur,null, this);
+                this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+            } 
+            else if (archer.tir == 0 && !archer.stun && player.x - archer.x < detectionArcher && player.x - archer.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
+                
+                fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
+                fleche.body.allowGravity = false;
+                fleche.setFlipX(true);
+                archer.tir = 1;
+        
+                fleche.setVelocityX( vitesseFleche);
+                archer.anims.play('TireurTir',true);
+                archer.setFlipX(true);
+
+                setTimeout(function(){archer.tir = 0;}, 1000);
+                archer.tir = 1;
+
+                this.physics.add.collider(fleche, platforms, flecheMur,null, this);
+                this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+
+            }
+            else if (!attrape){
+                archer.anims.play('TireurNeutre',true);
             }
         }
+    }
 
      /////////////////////////////   
      // SOLDAT ///////////////////
@@ -1012,13 +1029,23 @@ class LevelPart1 extends Phaser.Scene{
 
                 if (player.x < enemie.x && !execution){
                     execution = true
-                    enemie.setFlipX(false);
-                    enemie.setVelocityX(-50)
+                    if (onGround){
+                        enemie.setFlipX(true);
+                        enemie.setVelocityX(50)
+                    }
+                    else {
+                        enemie.setVelocityX(0);
+                    }
                 }
                 else if (player.x > enemie.x && !execution) {
                     execution = true
-                    enemie.setFlipX(true);
-                    enemie.setVelocityX(50)
+                    if(onGround){
+                        enemie.setFlipX(false);
+                        enemie.setVelocityX(-50);
+                    }
+                    else {
+                        enemie.setVelocityX(0);
+                    }
                 } 
             }
             else if (enemie.stun){
@@ -1031,7 +1058,7 @@ class LevelPart1 extends Phaser.Scene{
                 enemie.setFlipX(true);
                 enemie.setVelocityX(0);
             }
-            else if (player.x - enemie.x < 400 && player.x - enemie.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver){
+            else if (player.x - enemie.x < detectionSoldat && player.x - enemie.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver){
                 enemie.setVelocityX(vitesseSoldatCourse);
                 enemie.anims.play("soldatCourse", true);
                 enemie.setFlipX(true);
@@ -1051,13 +1078,27 @@ class LevelPart1 extends Phaser.Scene{
 
                 if (player.x > enemie.x && !execution){
                     execution = true;
-                    enemie.setFlipX(true);
-                    enemie.setVelocityX(50)
+                    
+                    if (onGround){
+                        enemie.setFlipX(true);
+                        enemie.setVelocityX(50)
+                    }
+                    else {
+                        enemie.setVelocityX(0);
+                    }
+                    
                 }
                 else if (player.x < enemie.x && !execution){
                     execution = true;
-                    enemie.setFlipX(false);
-                    enemie.setVelocityX(-50);
+                    
+                    if(onGround){
+                        enemie.setFlipX(false);
+                        enemie.setVelocityX(-50);
+                    }
+                    else {
+                        enemie.setVelocityX(0);
+                    }
+                    
                 } 
                     
             }
@@ -1066,7 +1107,7 @@ class LevelPart1 extends Phaser.Scene{
                 enemie.setFlipX(false);
                 enemie.setVelocityX(0);
             }
-            else if(enemie.x - player.x < 400 && enemie.x - player.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver) {
+            else if(enemie.x - player.x < detectionSoldat && enemie.x - player.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver) {
 
                 enemie.setVelocityX(-vitesseSoldatCourse);
                 enemie.anims.play("soldatCourse", true);
@@ -1130,7 +1171,7 @@ class LevelPart1 extends Phaser.Scene{
                 colosse.setVelocityX(0);
             }
 
-            else if (player.x - colosse.x < 400 && player.x - colosse.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver){
+            else if (player.x - colosse.x < detectionColosse && player.x - colosse.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver){
                 colosse.setVelocityX(vitesseColosseCourse);
                 colosse.anims.play("colosseCourse", true);
                 colosse.setFlipX(true);
@@ -1168,7 +1209,7 @@ class LevelPart1 extends Phaser.Scene{
                 colosse.setVelocityX(0);
             }
 
-            else if(colosse.x - player.x < 400 && colosse.x - player.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver) {
+            else if(colosse.x - player.x < detectionColosse && colosse.x - player.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver) {
 
                 colosse.setVelocityX(-vitesseColosseCourse);
                 colosse.anims.play("colosseCourse", true);
@@ -1199,7 +1240,7 @@ class LevelPart1 extends Phaser.Scene{
             chimiste.fuite = false;
         }
 
-        if(chimiste.x - player.x < 200 && chimiste.x - player.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'LEFT' */&& !chimiste.fuite && !gameOver) {              
+        if(chimiste.x - player.x < detectionChimiste && chimiste.x - player.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'LEFT' */&& !chimiste.fuite && !gameOver) {              
 
                 if(player.x < chimiste.x && !chimiste.lancer){
                     
@@ -1248,7 +1289,7 @@ class LevelPart1 extends Phaser.Scene{
             
 
         }
-        else if (player.x - chimiste.x < 200 && player.x - chimiste.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'RIGHT'*/&& !chimiste.fuite && !gameOver){
+        else if (player.x - chimiste.x < detectionChimiste && player.x - chimiste.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'RIGHT'*/&& !chimiste.fuite && !gameOver){
             if(player.x < chimiste.x && !chimiste.lancer){
                     
                 setTimeout(function(){chimiste.lancer = false;}, 700);
@@ -1343,65 +1384,29 @@ class LevelPart1 extends Phaser.Scene{
         }
         
     }
-    
-    /*if (player.x < archerX){
-        this.felche.setVelocityX(100);
-    }*/
-    
-        /*else if (attaque){
-            setTimeout(function(){this.enemies.setTint(0xffffff);}, dureStun);
-            enemieStun = true;
-            setTimeout(function(){enemieStun = false}, dureStun);
-            this.enemies.setTint(0xff0000);
-        }*/
         
     }
-        
-        /*if (onGround) {
-        
-            if (player.body.velocity.x < 0){
-
-                player.anims.play('course', true);
-                player.setFlipX(false);
-            }
-            else if (position_base == false){
-
-                player.anims.play('neutre', true);
-                player.setFlipX(false);
-            }
-            else if (player.body.velocity.x > 0){
-
-                player.anims.play('course', true);
-                player.setFlipX(true);
-            } 
-            else if (position_base == true){
-
-                player.anims.play('neutre', true);
-                player.setFlipX(true);
-            }
-        }*/
         
     } 
     function chope(player, enemie){
         if (attaque && enemie.chope == false && onGround == false){
-            setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
             enemie.stun = true;
             enemie.anims.play('soldatStunAtkBoucle', true);
             setTimeout(function(){enemie.stun = false}, dureStun);
-            enemie.setTint(0xff0000);
         }
         else if (enemie.stun == false && gameOver == false && invincible == false && attaque == false){
             attrape = true;
             enemie.chope = true;
-            compteur --;
+            
             player.setVelocityX(0);
             if (onGround){
+                compteur --;
                 enemie.anims.play('soldatExecution',true);
             }
                 
 
             if ( cursors2.E.isDown && nbFumigene > 0 && compteur > 0){
-                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
                 animeFumerFX = true;
                 
                 nbFumigene --;
@@ -1409,25 +1414,10 @@ class LevelPart1 extends Phaser.Scene{
                 enemie.chope = false;
                 compteur = compteurMax;
                 invincible = true;
-                
-                //setTimeout(function(){invincible = true;}, 60);
-                //player.setTint(0xff0000);
 
-                setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
                 enemie.stun = true;
                 enemie.anims.play('soldatStunAtkBoucle', true);
                 setTimeout(function(){enemie.stun = false}, dureStun);
-                enemie.setTint(0xff0000);
-
-
-                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
-
-                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
-                    enemieStun = true;
-                    setTimeout(function(){enemieStun = false}, dureStun);
-                    enemies.setTint(0xff0000);
-
-                }*/
                 
             }
             else if (compteur == 0){
@@ -1437,53 +1427,7 @@ class LevelPart1 extends Phaser.Scene{
             }
         }
     } 
-    /*function chope(player, enemie){
-        if (attaque && enemie.setVelocityX!= 0 && onGround == false){
-            setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
-            //enemieStun = true;
-            setTimeout(function(){enemie.setVelocityX(0)}, dureStun);
-            enemie.setTint(0xff0000);
-        }
-        else if (enemie.setVelocityX!= 0 && gameOver == false && invincible == false && attaque == false){
-            //attrape = true;
-            enemie.setVelocityX(0)
-            compteur --;
-                
-
-            if ( cursors2.E.isDown && nbFumigene > 0 && compteur > 0){
-                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
-                animeFumerFX = true;
-                
-                nbFumigene --;
-                //attrape = false;
-                compteur = compteurMax;
-                invincible = true;
-                
-                //setTimeout(function(){invincible = true;}, 60);
-                //player.setTint(0xff0000);
-
-                setTimeout(function(){enemie.setTint(0xffffff);}, dureStun);
-                //enemieStun = true;
-                setTimeout(function(){enemie.setVelocityX(0)}, dureStun);
-                enemie.setTint(0xff0000);
-
-
-                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
-
-                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
-                    enemieStun = true;
-                    setTimeout(function(){enemieStun = false}, dureStun);
-                    enemies.setTint(0xff0000);
-
-                }
-                
-            }
-            else if (compteur == 0){
-                
-                gameOver = true;
-            }
-        }
-    }*/
+    
     function chopeColosse(player, colosse){
         if (attaque && attrape == false && onGround == false){
             sautTete = true;
@@ -1494,15 +1438,16 @@ class LevelPart1 extends Phaser.Scene{
         if (colosse.stun == false && gameOver == false && invincible == false && sautTete == false){
             colosse.chope = true;
             attrape = true;
-            compteur --;
+            
             player.setVelocityX(0);
             if (onGround){
+                compteur --;
                 colosse.anims.play('colosseExecution',true);
             }
             
 
             if ( cursors2.E.isDown && nbFumigene >0 && compteur >0){
-                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
+                fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
                 animeFumerFX = true;
                 
                 nbFumigene --;
@@ -1510,24 +1455,9 @@ class LevelPart1 extends Phaser.Scene{
                 attrape = false;
                 compteur = compteurMax;
                 invincible = true;
-                
-                //setTimeout(function(){invincible = true;}, 60);
-                //player.setTint(0xff0000);
 
-                setTimeout(function(){colosse.setTint(0xffffff);}, dureStun);
                 colosse.stun = true;
                 setTimeout(function(){colosse.stun = false}, dureStun);
-                colosse.setTint(0xff0000);
-
-
-                /*if (enemies.y <= player.y+1000 && enemies.y >= player.y-1000 && enemies.x <= player.x+1000 && enemies.x >= player.x-1000){
-
-                    setTimeout(function(){enemies.setTint(0xffffff);}, dureStun);
-                    enemieStun = true;
-                    setTimeout(function(){enemieStun = false}, dureStun);
-                    enemies.setTint(0xff0000);
-
-                }*/
                 
             }
             else if (compteur == 0){
@@ -1538,54 +1468,21 @@ class LevelPart1 extends Phaser.Scene{
     }
     function chopeChimiste(player, chimiste){
         if (attaque && attrape == false && onGround == false){
-            setTimeout(function(){chimiste.setTint(0xffffff);}, dureStun);
             
             chimiste.stun = true;
             setTimeout(function(){chimiste.stun = false}, dureStun);
-            chimiste.setTint(0xff0000);
         }
-        /*else if (chimisteStun == false && gameOver == false && invincible == false && attaque == false){
-            attrape = true;
-            compteur --;
-            player.setVelocityX(0);
-            
-
-            if ( cursors2.E.isDown && nbFumigene > 0 && compteur >0  && chimisteMask == false){
-                fumerFX = this.add.sprite(player.x,player.y, 'fumi');
-                animeFumerFX = true;
-                
-                nbFumigene --;
-                attrape = false;
-                compteur = compteurMax;
-                invincible = true;
-                
-                //setTimeout(function(){invincible = true;}, 60);
-                //player.setTint(0xff0000);
-
-                setTimeout(function(){chimiste.setTint(0xffffff);}, dureStun);
-                chimisteStun = true;
-                setTimeout(function(){chimisteStun = false}, dureStun);
-                chimiste.setTint(0xff0000);
-                
-            }
-            else if (compteur == 0){
-                
-                gameOver = true;
-            }
-        }*/
+        
     }
     function chopeAcher (player, archer){
         if (attaque && onGround == false){
-            setTimeout(function(){archer.setTint(0xffffff);}, dureStun);
             archer.stun = true;
             
             archer.anims.play('TireurStun',true);
             setTimeout(function(){archer.stun = false}, dureStun);
-            archer.setTint(0xff0000);
         }
         if (archer.stun == false && gameOver == false && invincible == false && attaque == false){
             player.setVelocityX(0);
-            //archer.tir = 1
             attrape = true;
             
             if (onGround && attrape){
@@ -1602,16 +1499,11 @@ class LevelPart1 extends Phaser.Scene{
                 attrape = false;
                 compteur = compteurMax;
                 invincible = true;
-                
-                //setTimeout(function(){invincible = true;}, 60);
-                //player.setTint(0xff0000);
 
-                setTimeout(function(){archer.setTint(0xffffff);}, dureStun);
                 archer.stun = true;
                 archer.anims.play('TireurStun',true);
                 setTimeout(function(){archer.stun = false}, dureStun);
-                archer.setTint(0xff0000);
-                //archer.tir = 0
+
             }
             else if (compteur == 0){
                 
@@ -1625,13 +1517,11 @@ class LevelPart1 extends Phaser.Scene{
         fleche.setVelocityX(0);
         fleche.disableBody(true, true);
         fleche.body.destroy();
-        //nbFleche = 0;
     }
     function fioleMur (fiole,platforms){
         fiole.setVelocityX(0);
         fiole.disableBody(true, true);
         fiole.body.destroy();
-        //lancer = false;
     }
     function flechePlayer (fleche,player){
         if (invincible == false){

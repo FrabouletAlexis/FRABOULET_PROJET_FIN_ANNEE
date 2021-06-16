@@ -15,7 +15,8 @@ class EcranTitre extends Phaser.Scene{
         this.load.spritesheet('bontonCommande','assets/menu/Bouton_commande.png', { frameWidth: 208, frameHeight: 65 });
         this.load.image('ecranTitre','assets/menu/ecran_titre.png');
         this.load.image('panneauCommande','assets/menu/panneau_commande.png');
-        this.load.spritesheet('boutonRetour','assets/menu/bouton_retour.png', { frameWidth: 208, frameHeight: 65 });
+        
+        
         /*this.load.image('parallaxe3','assets/parallaxe/parallaxe_3.png');
         this.load.image('parallaxe2','assets/parallaxe/parallaxe_2.png');
         this.load.image('parallaxe1','assets/parallaxe/parallaxe_1.png');

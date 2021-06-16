@@ -85,8 +85,8 @@ class LevelPart3 extends Phaser.Scene{
      // JOUEUR ///////////////////
     /////////////////////////////
 
-        player = this.physics.add.sprite(150, 225, 'vinetta');
-        //player = this.physics.add.sprite(3720, 1400, 'vinetta');
+        player = this.physics.add.sprite(150, 225, 'vinetta').setDepth(3);
+        //player = this.physics.add.sprite(3720, 1400, 'vinetta').setDepth(3);
         player.body.setGravityY(gravite_joueur)
         player.body.height = 150;
         player.body.width = 50;
@@ -103,7 +103,7 @@ class LevelPart3 extends Phaser.Scene{
 
             if (player.y >= 1357 && player.x >= 3724){
                 //this.scene.start("EcranTitre");
-                this.scene.start("TesteAnime");
+                this.scene.start("LevelPart4");
                 /*cursors.up.reset();
                 cursors.down.reset();
                 cursors.right.reset();
@@ -799,53 +799,53 @@ class LevelPart3 extends Phaser.Scene{
     /////////////////////////////
 
         
-        for (const archer of this.archers.children.entries) {
+    for (const archer of this.archers.children.entries) {
 
-            if (archer.tir == 0 && archer.stun == false){
-                
-
-                if (archer.tir == 0 && !archer.stun && archer.x - player.x < 400 && archer.x - player.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
-                    
-                    fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
-                    fleche.body.allowGravity = false;
-                    fleche.setFlipX(false);
-                    archer.tir = 1;
-                    //console.log('nbFleche =1');
-                
-                    fleche.setVelocityX( -vitesseFleche);
-                    archer.anims.play('TireurTir',true);
-                    archer.setFlipX(false);
-
-                    setTimeout(function(){archer.tir = 0;}, 1000);
-                    archer.tir = 1;
-
-                    this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-                    this.physics.add.overlap(fleche, player,flechePlayer,null, this);
-                } 
-                else if (archer.tir == 0 && !archer.stun && player.x - archer.x < 400 && player.x - archer.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
-                    
-                    fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
-                    fleche.body.allowGravity = false;
-                    fleche.setFlipX(true);
-                    archer.tir = 1;
-                    //console.log('nbFleche =1');
+        if (archer.tir == 0 && archer.stun == false){
             
-                    fleche.setVelocityX( vitesseFleche);
-                    archer.anims.play('TireurTir',true);
-                    archer.setFlipX(true);
 
-                    setTimeout(function(){archer.tir = 0;}, 1000);
-                    archer.tir = 1;
+            if (archer.tir == 0 && !archer.stun && archer.x - player.x < detectionArcher && archer.x - player.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
+                
+                fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
+                fleche.body.allowGravity = false;
+                fleche.setFlipX(false);
+                archer.tir = 1;
+                //console.log('nbFleche =1');
+            
+                fleche.setVelocityX( -vitesseFleche);
+                archer.anims.play('TireurTir',true);
+                archer.setFlipX(false);
 
-                    this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-                    this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+                setTimeout(function(){archer.tir = 0;}, 1000);
+                archer.tir = 1;
 
-                }
-                else if (!attrape){
-                    archer.anims.play('TireurNeutre',true);
-                }
+                this.physics.add.collider(fleche, platforms, flecheMur,null, this);
+                this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+            } 
+            else if (archer.tir == 0 && !archer.stun && player.x - archer.x < detectionArcher && player.x - archer.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
+                
+                fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
+                fleche.body.allowGravity = false;
+                fleche.setFlipX(true);
+                archer.tir = 1;
+                //console.log('nbFleche =1');
+        
+                fleche.setVelocityX( vitesseFleche);
+                archer.anims.play('TireurTir',true);
+                archer.setFlipX(true);
+
+                setTimeout(function(){archer.tir = 0;}, 1000);
+                archer.tir = 1;
+
+                this.physics.add.collider(fleche, platforms, flecheMur,null, this);
+                this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+
+            }
+            else if (!attrape){
+                archer.anims.play('TireurNeutre',true);
             }
         }
+    }
 
      /////////////////////////////   
      // SOLDAT ///////////////////
@@ -890,7 +890,7 @@ class LevelPart3 extends Phaser.Scene{
                 enemie.setFlipX(true);
                 enemie.setVelocityX(0);
             }
-            else if (player.x - enemie.x < 400 && player.x - enemie.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver){
+            else if (player.x - enemie.x < detectionSoldat && player.x - enemie.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver){
                 enemie.setVelocityX(vitesseSoldatCourse);
                 enemie.anims.play("soldatCourse", true);
                 enemie.setFlipX(true);
@@ -925,7 +925,7 @@ class LevelPart3 extends Phaser.Scene{
                 enemie.setFlipX(false);
                 enemie.setVelocityX(0);
             }
-            else if(enemie.x - player.x < 400 && enemie.x - player.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver) {
+            else if(enemie.x - player.x < detectionSoldat && enemie.x - player.x > 0 && enemie.y - player.y < 10 && enemie.y - player.y > -10 && !attrape && !enemie.stun && !invincible && !gameOver) {
 
                 enemie.setVelocityX(-vitesseSoldatCourse);
                 enemie.anims.play("soldatCourse", true);
@@ -989,7 +989,7 @@ class LevelPart3 extends Phaser.Scene{
                 colosse.setVelocityX(0);
             }
 
-            else if (player.x - colosse.x < 400 && player.x - colosse.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver){
+            else if (player.x - colosse.x < detectionColosse && player.x - colosse.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver){
                 colosse.setVelocityX(vitesseColosseCourse);
                 colosse.anims.play("colosseCourse", true);
                 colosse.setFlipX(true);
@@ -1027,7 +1027,7 @@ class LevelPart3 extends Phaser.Scene{
                 colosse.setVelocityX(0);
             }
 
-            else if(colosse.x - player.x < 400 && colosse.x - player.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver) {
+            else if(colosse.x - player.x < detectionColosse && colosse.x - player.x > 0 && colosse.y - player.y < 10 && colosse.y - player.y > -10 && !colosse.chope && !colosse.stun && !invincible && !gameOver) {
 
                 colosse.setVelocityX(-vitesseColosseCourse);
                 colosse.anims.play("colosseCourse", true);
@@ -1058,7 +1058,7 @@ class LevelPart3 extends Phaser.Scene{
             chimiste.fuite = false;
         }
 
-        if(chimiste.x - player.x < 200 && chimiste.x - player.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'LEFT' */&& !chimiste.fuite && !gameOver) {              
+        if(chimiste.x - player.x < detectionChimiste && chimiste.x - player.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'LEFT' */&& !chimiste.fuite && !gameOver) {              
 
                 if(player.x < chimiste.x && !chimiste.lancer){
                     
@@ -1107,7 +1107,7 @@ class LevelPart3 extends Phaser.Scene{
             
 
         }
-        else if (player.x - chimiste.x < 200 && player.x - chimiste.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'RIGHT'*/&& !chimiste.fuite && !gameOver){
+        else if (player.x - chimiste.x < detectionChimiste && player.x - chimiste.x > 0 && chimiste.y - player.y < 10 && chimiste.y - player.y > -10 && !attrape && !chimiste.stun && !invincible /*&& chimiste.direction === 'RIGHT'*/&& !chimiste.fuite && !gameOver){
             if(player.x < chimiste.x && !chimiste.lancer){
                     
                 setTimeout(function(){chimiste.lancer = false;}, 700);
