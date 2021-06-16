@@ -38,19 +38,7 @@
          "draworder":"topdown",
          "id":2,
          "name":"colosse",
-         "objects":[
-                {
-                 "height":0,
-                 "id":55,
-                 "name":"",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1294.20619093037,
-                 "y":597.325934275557
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -72,7 +60,19 @@
          "draworder":"topdown",
          "id":4,
          "name":"soldat",
-         "objects":[],
+         "objects":[
+                {
+                 "height":0,
+                 "id":58,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1248.75747853984,
+                 "y":636.281973467441
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -91,7 +91,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":56,
+ "nextobjectid":59,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.4.3",

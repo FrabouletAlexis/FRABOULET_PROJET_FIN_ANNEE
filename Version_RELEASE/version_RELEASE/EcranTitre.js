@@ -1,4 +1,5 @@
-var imageCharge
+
+
 class EcranTitre extends Phaser.Scene{
 
     constructor(){

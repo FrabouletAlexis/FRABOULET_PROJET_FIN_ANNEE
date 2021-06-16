@@ -5,13 +5,12 @@
     <title>Prog Fin D'année</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.54.0/dist/phaser.js"></script>
     <script type="text/javascript" src="Soldat.js"></script>
+    <script src="LevelPart1.js"></script>
     <script src="EcranTitre.js"></script>
     <script src="EcranCommande.js"></script>
-    <script src="LevelPart1.js"></script>
     <script src="LevelPart2.js"></script>
     <script src="LevelPart3.js"></script>
     <script src="LevelPart4.js"></script>
-    <script src="SceneTwo.js"></script>
     <script src="LevelTeste.js"></script>
     <script src="TesteAnime.js"></script>
     <script src="TesteClass.js"></script>
@@ -40,7 +39,7 @@ var config = {
             debug: true
         }
     },
-    scene: [ TesteAnime,LevelPart1,EcranTitre,LevelPart4,LevelPart3,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
+    scene: [ LevelPart1,TesteAnime,EcranTitre,LevelPart4,LevelPart3,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
 };
 
 var game = new Phaser.Game(config);

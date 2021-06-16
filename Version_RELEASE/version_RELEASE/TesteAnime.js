@@ -1,3 +1,4 @@
+
 var musicConfig;
 var execution =false;
 
@@ -81,11 +82,11 @@ class TesteAnime extends Phaser.Scene{
 
         }, this)
 
-        flecheDroite.on('pointerdown', function(){
+        /*flecheDroite.on('pointerdown', function(){
             menuPause.destroy();
             buttonRetour.destroy();
             this.physics.resume();
-        }, this)
+        }, this)*/
 
         
 
@@ -248,7 +249,7 @@ class TesteAnime extends Phaser.Scene{
             enemie.body.height = 150;
             enemie.body.width = 58;
             //enemie.body.setOffset(((160/2)-(70/2)),0);
-            enemie.body.setOffset(15,0);
+            enemie.body.setOffset(15,10);
         }
 
         
@@ -687,11 +688,11 @@ class TesteAnime extends Phaser.Scene{
     
 
         if(invincible == true){
-            player.setTint(0x0f3434);
+            
             compteurInvincible-- ;
             if(compteurInvincible == 0){
                 compteurInvincible = restCompteurInvincible;
-                player.setTint(0xffffff);
+                
                 invincible = false ;
             }
         }
@@ -710,20 +711,7 @@ class TesteAnime extends Phaser.Scene{
             }*/
         }
 
-        if (animeFumerFX == true){
-            compteurAnimeFumerFX-- ;
-           // fumerFX.anims.play('exploseFumi',true)
-            /*var teste = 1000;
-            teste --;*/
-            fumerFX.anims.play('exploseFumi',true)
-            if(compteurAnimeFumerFX == 0){
-                compteurAnimeFumerFX = restAnimeFumerFX;
-                fumerFX.destroy();
-                animeFumerFX = false
-                
-            }
-            
-        }
+        
         /*if (enemieStun){
             setTimeout(function(){enemieStun = false}, 1000);
             this.enemies.setTint(0xffffff);
@@ -851,7 +839,21 @@ class TesteAnime extends Phaser.Scene{
             setTimeout(function(){var jumpDuration = false}, 500);
             setTimeout(function(){jumpCD = true}, 800);
 
-        }      
+        } 
+        if (animeFumerFX == true){
+            compteurAnimeFumerFX-- ;
+           // fumerFX.anims.play('exploseFumi',true)
+            /*var teste = 1000;
+            teste --;*/
+            fumerFX.anims.play('exploseFumi',true)
+            if(compteurAnimeFumerFX == 0){
+                compteurAnimeFumerFX = restAnimeFumerFX;
+                fumerFX.destroy();
+                animeFumerFX = false
+                
+            }
+            
+        }     
         
 
 
@@ -932,13 +934,14 @@ class TesteAnime extends Phaser.Scene{
             if (enemie.chope){
                 if (gameOver){
                     enemie.setVelocityX(0);
+                    enemie.chope = false
                 } 
 
                 if (player.x < enemie.x && !execution){
                     execution = true
                     if (onGround){
-                        enemie.setFlipX(true);
-                        enemie.setVelocityX(50)
+                        enemie.setFlipX(false);
+                        enemie.setVelocityX(-50)
                     }
                     else {
                         enemie.setVelocityX(0);
@@ -947,8 +950,8 @@ class TesteAnime extends Phaser.Scene{
                 else if (player.x > enemie.x && !execution) {
                     execution = true
                     if(onGround){
-                        enemie.setFlipX(false);
-                        enemie.setVelocityX(-50);
+                        enemie.setFlipX(true);
+                        enemie.setVelocityX(50);
                     }
                     else {
                         enemie.setVelocityX(0);
@@ -957,11 +960,6 @@ class TesteAnime extends Phaser.Scene{
             }
             else if (enemie.stun){
                 enemie.anims.play('soldatStunAtkBoucle', true);
-                enemie.setFlipX(true);
-                enemie.setVelocityX(0);
-            }
-            else if (enemieStunFumi){
-                enemie.anims.play('soldatStunFumiBoucle', true);
                 enemie.setFlipX(true);
                 enemie.setVelocityX(0);
             }
@@ -981,6 +979,7 @@ class TesteAnime extends Phaser.Scene{
             if (enemie.chope){
                 if (gameOver){
                     enemie.setVelocityX(0);
+                    enemie.chope = false
                 }
 
                 if (player.x > enemie.x && !execution){
@@ -1056,6 +1055,7 @@ class TesteAnime extends Phaser.Scene{
                 //colosse.setVelocityX(100)
                 if (gameOver){
                     colosse.setVelocityX(0);
+                    colosse.chope = false
                 } 
 
                 if (player.x < colosse.x && !execution){
@@ -1111,6 +1111,7 @@ class TesteAnime extends Phaser.Scene{
                 //colosse.setVelocityX(-100)
                 if (gameOver){
                     colosse.setVelocityX(0);
+                    colosse.chope = false
                 }
 
                 if (player.x > colosse.x && !execution){
