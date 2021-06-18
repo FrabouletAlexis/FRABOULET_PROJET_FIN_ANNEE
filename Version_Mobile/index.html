@@ -1,0 +1,64 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Prog Fin D'année</title>
+    <script src="phaser.js"></script>
+    <script type="text/javascript" src="Soldat.js"></script>
+    <script src="LevelPart1.js"></script>
+    <script src="LettreDebut.js"></script>
+    <script src="EcranTitre.js"></script>
+    <script src="EcranCommande.js"></script>
+    <script src="LevelPart2.js"></script>
+    <script src="LevelPart3.js"></script>
+    <script src="LevelPart4.js"></script>
+    <script src="LevelTeste.js"></script>
+    <script src="TesteAnime.js"></script>
+    <script src="TesteClass.js"></script>
+    <style type="text/css">
+        body {
+            /*margin-top:15%;
+            margin-bottom:15%;
+            margin-right:26.25%;
+            margin-left:26.25%;*/
+            
+            margin-top:15%;
+            margin-bottom:15%;
+            margin-right:26.25%;
+            margin-left:26.25%;
+
+            /*border: 5px ridge #15121b;
+            border-radius: 10px;*/
+            background: linear-gradient(#242638, #250738);
+        }
+    </style>
+</head>
+<body>
+    
+
+<script type="text/javascript">
+
+var config = {
+    type: Phaser.AUTO,
+    parent: "game",
+    width: 896,
+    height: 448,
+    input: {
+        gamepad : true
+    },
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 200 },
+            debug: false
+        }
+    },
+    scene: [EcranTitre,TesteAnime,LevelPart3,LettreDebut,LevelPart1,LevelPart4,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
+};
+
+var game = new Phaser.Game(config);
+
+</script>
+
+</body>
+</html>
