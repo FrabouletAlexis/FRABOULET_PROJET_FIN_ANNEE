@@ -49,7 +49,19 @@
          "draworder":"topdown",
          "id":3,
          "name":"chimiste",
-         "objects":[],
+         "objects":[
+                {
+                 "height":0,
+                 "id":59,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1261.74282493714,
+                 "y":616.803953871499
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -60,19 +72,7 @@
          "draworder":"topdown",
          "id":4,
          "name":"soldat",
-         "objects":[
-                {
-                 "height":0,
-                 "id":58,
-                 "name":"",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1248.75747853984,
-                 "y":636.281973467441
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -91,7 +91,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":59,
+ "nextobjectid":60,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.4.3",

@@ -26,9 +26,16 @@ var dureInvincible = 2000;
 /////////////
 var buttonJouer;
 var buttonRetour;
+var buttonSuite;
 
 var buttonPause;
 var menuPause;
+var pause = false;
+var coffreMenuGris;
+var coffreMenuVert;
+var coffreMenuBleu;
+var coffreMenuMarron;
+var coffreMenuRouge;
 
 var flecheDroite;
 var flecheGauche;
@@ -36,6 +43,11 @@ var flecheHaut;
 var flecheBas;
 var buttonFumi;
 
+var droite = false;
+var gauche = false;
+var haut = false;
+var bas = false;
+var utiliseFumi = false;
 ///////////////
 /// enemie /// 
 /////////////
@@ -68,7 +80,7 @@ var fiole;
 var vitesseFleche = 400;
 var fleche;
 
-//vie
+//fumi
 var barreFumi0;
 var barreFumi1;
 var barreFumi2;
@@ -88,6 +100,9 @@ var vitesse_saut = 600;
 var gravite_joueur = 400;
 var vitesseAttaque = 600;
 
+var tutoATerre = false;
+var textTuto;
+
 var verifDash = true;
 var duration = true;
 var speed = 1;
@@ -101,8 +116,11 @@ var compteurAnimeFumerFX = restAnimeFumerFX;
 
  // item ///
 
-clef1 = false;
-
+var lef1 = false;
+var coffreVert = false;
+var coffreBleu = false;
+var coffreMarron = false;
+var coffreRouge = false;
 
 class LevelPart1 extends Phaser.Scene{
     constructor(){
@@ -113,39 +131,7 @@ class LevelPart1 extends Phaser.Scene{
     }
     preload(){
 
-        this.load.image('parallaxe3','assets/parallaxe/parallaxe_3.png');
-        this.load.image('parallaxe2','assets/parallaxe/parallaxe_2.png');
-        this.load.image('parallaxe1','assets/parallaxe/parallaxe_1.png');
-
-        this.load.audio('audio_fond', 'assets/audio/music_fond.ogg')
-        this.load.audio('bruit_coup', 'assets/audio/Bruit_coup.ogg')
-
-        this.load.image('boutonPause','assets/menu/Bouton_pause.png');
-        this.load.image('menuPause','assets/menu/Panneau_Pause.png');
-        this.load.spritesheet('boutonRetour','assets/menu/bouton_retour.png', { frameWidth: 208, frameHeight: 65 });
-
-        this.load.spritesheet('vinetta', 'assets/spritesheet/spritesheet_Vinetta.png', { frameWidth: 160, frameHeight: 150 });
-        this.load.spritesheet('vinetta_Mort_fiole', 'assets/spritesheet/spritesheet_Vinetta_Mort_fiole.png', { frameWidth: 235, frameHeight: 150 });
-        //this.load.spritesheet('mia_mort', 'assets/spritesheet/mia_mort.png', { frameWidth: 210, frameHeight: 150 });
-        this.load.spritesheet('soldat', 'assets/spritesheet/spritesheet_soldat.png', { frameWidth: 90, frameHeight: 160 });
-        this.load.spritesheet('colosse', 'assets/spritesheet/spritesheet_colosse.png', { frameWidth: 120, frameHeight: 160 });
-        this.load.spritesheet('archer', 'assets/spritesheet/spritesheet_tireur.png', { frameWidth: 87, frameHeight: 150 });
-        this.load.spritesheet('chimiste', 'assets/spritesheet/spritesheet_chimiste.png', { frameWidth: 90, frameHeight: 150 });
-
-        this.load.spritesheet('explosionFumi', 'assets/FX/explosion_fumi.png', { frameWidth: 380, frameHeight: 400 });
-        this.load.image('fleche','assets/spritesheet/fleche.png');
-        this.load.image('fiole','assets/item/batterie.png');
-        this.load.image('bombe','assets/item/Bombe_Loot.png');
-        this.load.image('clef','assets/item/clef.png');
-        this.load.image('tresor','assets/item/Coffre_loot.png');
-        this.load.image('porte','assets/item/Porte_deverouille.png');
         
-        this.load.image('barreFumi0','assets/barre_fumi/Barre_fumi_0.png');
-        this.load.image('barreFumi1','assets/barre_fumi/Barre_fumi_1.png');
-        this.load.image('barreFumi2','assets/barre_fumi/Barre_fumi_2.png');
-        this.load.image('barreFumi3','assets/barre_fumi/Barre_fumi_3.png');
-        this.load.image('barreFumi4','assets/barre_fumi/Barre_fumi_4.png');
-        this.load.image('barreFumi5','assets/barre_fumi/Barre_fumi_5.png');
 
         this.load.image('tiles','assets/tiles/Decors.png');
         this.load.tilemapTiledJSON('mapPart1','assets/tiles/level_Part_1.json');
@@ -155,11 +141,13 @@ class LevelPart1 extends Phaser.Scene{
     }
     create(){
 
+        this.cameras.main.fadeIn(1000);
+        
         this.bruitCoup = this.sound.add('bruit_coup')
 
-        this.add.image(4128/2, 2688/2, 'parallaxe4').setScrollFactor(0.5);
-        this.add.image(4128/2, 2688/2, 'parallaxe3').setScrollFactor(0.6);
-        this.add.image(4128/2, 2688/2, 'parallaxe2').setScrollFactor(0.9);
+        this.add.image(4128/2, 2688/2, 'parallaxe3').setScrollFactor(0.5);
+        this.add.image(4128/2, 2688/2, 'parallaxe2').setScrollFactor(0.6);
+        this.add.image(4128/2, 2688/2, 'parallaxe1').setScrollFactor(0.9);
 
         const map = this.make.tilemap({key : 'mapPart1'});
         const tileset = map.addTilesetImage('platforms','tiles');
@@ -195,6 +183,8 @@ class LevelPart1 extends Phaser.Scene{
 
             if (player.y >= 2990 && player.x >= 4840/* && player.x <= 560*/){
                 this.scene.start("LevelPart2");
+                clef1 = false;
+                nbFumigene = 5;
             }
         }
         
@@ -603,13 +593,13 @@ class LevelPart1 extends Phaser.Scene{
         
         for (const coffre of  coffreObjects) {
 
-            this.coffre.create(coffre.x, coffre.y, 'tresor')
+            this.coffre.create(coffre.x, coffre.y, 'tresorVert')
                 .setOrigin(0.5,0.5)
                 .setDepth(1)
                 .setScale(1)
         }
 
-        this.physics.add.overlap(player, this.coffre ,recupCoffre, null,this);
+        this.physics.add.overlap(player, this.coffre ,recupCoffreVert, null,this);
 
         /////////////////////////////   
         // Porte ///////////////////
@@ -630,6 +620,9 @@ class LevelPart1 extends Phaser.Scene{
         }
 
         this.physics.add.collider(player, this.porte ,ouvrePorte, null,this);
+        this.physics.add.collider(this.enemies, this.porte);
+        this.physics.add.collider(this.colosses, this.porte);
+        this.physics.add.collider(this.chimiste, this.porte);
         
       /////////////////////////////   
      // CONTROLE /////////////////
@@ -652,17 +645,49 @@ class LevelPart1 extends Phaser.Scene{
          // BOUTON ///////////////////
         ///////////////////////////// 
 
-        buttonPause = this.add.sprite(866, 30, 'boutonPause').setScrollFactor(0).setDepth(3).setInteractive({ cursor: 'pointer' });
+        buttonPause = this.add.sprite(866, 30, 'boutonPause').setScrollFactor(0).setDepth(10).setInteractive({ cursor: 'pointer' });
 
         buttonPause.on('pointerdown', function(){
-            this.physics.pause();
-            menuPause = this.add.image(896/2, 190, 'menuPause').setScrollFactor(0).setDepth(3);
-            buttonRetour = this.add.sprite(250,400,'boutonRetour').setScrollFactor(0).setDepth(3).setInteractive({ cursor: 'pointer' });
-            buttonRetour.on('pointerdown', function(){
-                menuPause.destroy();
-                buttonRetour.destroy();
-                this.physics.resume();
-            }, this)
+            if (!pause){
+                this.physics.pause();
+                pause = true
+                menuPause = this.add.image(896/2, 190, 'menuPause').setScrollFactor(0).setDepth(10);
+                coffreMenuGris = this.add.image(896/2, 448/2, 'CoffreGris').setScrollFactor(0).setDepth(11);
+                if (coffreVert){
+                    coffreMenuVert = this.add.image(896/2, 448/2, 'CoffreVert').setScrollFactor(0).setDepth(11);
+                }
+                if (coffreBleu){
+                    coffreMenuBleu = this.add.image(896/2, 448/2, 'CoffreBleu').setScrollFactor(0).setDepth(11);
+                }
+                if (coffreMarron){
+                    coffreMenuMarron = this.add.image(896/2, 448/2, 'CoffreMarron').setScrollFactor(0).setDepth(11);
+                }
+                if (coffreRouge){
+                    coffreMenuRouge = this.add.image(896/2, 448/2, 'CoffreRouge').setScrollFactor(0).setDepth(11);
+                }
+                buttonRetour = this.add.sprite(250,400,'boutonRetour').setScrollFactor(0).setDepth(9).setInteractive({ cursor: 'pointer' });
+                
+                buttonRetour.on('pointerdown', function(){
+                    coffreMenuGris.destroy();
+                    if (coffreVert){
+                        coffreMenuVert.destroy();
+                    }
+                    if (coffreBleu){
+                        coffreMenuBleu.destroy();
+                    }
+                    if (coffreMarron){
+                        coffreMenuMarron.destroy();
+                    }
+                    if (coffreRouge){
+                        coffreMenuRouge.destroy();
+                    }
+                    menuPause.destroy();
+                    buttonRetour.destroy();
+                    this.physics.resume();
+                    pause = false;
+                }, this)
+            }
+            
 
         }, this)
 
@@ -673,6 +698,18 @@ class LevelPart1 extends Phaser.Scene{
             gameOver = true;
         }
 
+        if (attrape && !tutoATerre && onGround){
+            tutoATerre = true;
+            this.physics.pause();
+            //this.enemies.anims.play('soldatExecution', false);
+            textTuto = this.add.image(896/2, 448/2, 'texteChope').setScrollFactor(0).setDepth(11);
+            
+        }
+        if ( cursors2.E.isDown && tutoATerre ){
+            this.physics.resume();
+            
+            textTuto.destroy(true,true);
+        }
           /////////////////////////////   
          // BARRE FUMI ///////////////
         ///////////////////////////// 
@@ -749,6 +786,7 @@ class LevelPart1 extends Phaser.Scene{
                 execution = false;
                 invincible = false;
                 nbFumigene = 5;
+                coffreVert = false;
                 
             }
 
@@ -770,7 +808,6 @@ class LevelPart1 extends Phaser.Scene{
         if ((cursors.left.isDown || cursors2.Q.isDown)&& attrape == false)
         {   
             if (gameOver == false){
-                
                 player.setVelocityX(-vitesse_joueur*speed);
                 player.anims.play("course", true);
                 player.setFlipX(true);
@@ -798,7 +835,9 @@ class LevelPart1 extends Phaser.Scene{
         {            
             player.setVelocityX(0);
         }
-
+        else if (cursors.right.isUp && cursors.left.isUp){
+            player.setVelocityX(0);
+        }
                 //saut /////////////////////
         if (((cursors.up.isDown && onGround || cursors2.Z.isDown && onGround || cursors2.SPACE.isDown && onGround) && attrape == false) && gameOver == false )
         {
@@ -825,7 +864,7 @@ class LevelPart1 extends Phaser.Scene{
         ////// DASH FUMIGENE /////////////////
         /////////////////////////////////////
 
-        if ((cursors.right.isDown || cursors.left.isDown || cursors2.D.isDown || cursors2.Q.isDown) && libre && verifDash && nbFumigene > 0 && !attrape && !gameOver){
+        if ((cursors.right.isDown || cursors.left.isDown || cursors2.D.isDown || cursors2.Q.isDown) && libre && verifDash && nbFumigene > 0 && !attrape && !gameOver && !invincible){
             this.bruitCoup.play()
             nbFumigene --;
             verifDash = false;
@@ -1339,10 +1378,10 @@ class LevelPart1 extends Phaser.Scene{
             }
                 
 
-            if ( cursors2.E.isDown && nbFumigene > 0 && compteur > 0){
+            if ( (cursors2.E.isDown || utiliseFumi) && nbFumigene > 0 && compteur > 0){
                 fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
                 animeFumerFX = true;
-                execution =false;
+                execution = false;
                 
                 nbFumigene --;
                 attrape = false;
@@ -1384,7 +1423,7 @@ class LevelPart1 extends Phaser.Scene{
             }
             
 
-            if ( cursors2.E.isDown && nbFumigene >0 && compteur >0){
+            if ( (cursors2.E.isDown || utiliseFumi) && nbFumigene >0 && compteur >0){
                 fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
                 animeFumerFX = true;
                 execution =false;
@@ -1432,7 +1471,7 @@ class LevelPart1 extends Phaser.Scene{
             }
             
 
-            if ( cursors2.E.isDown && nbFumigene >0 && compteur > 0){
+            if ( (cursors2.E.isDown || utiliseFumi) && nbFumigene >0 && compteur > 0){
                 fumerFX = this.add.sprite(player.x,player.y, 'fumi');
                 animeFumerFX = true;
                 
@@ -1518,10 +1557,32 @@ class LevelPart1 extends Phaser.Scene{
         clef.body.destroy();
         clef1 = true;
     }
-    function recupCoffre (player,coffre){
+    function recupCoffreVert (player,coffre){
         
         coffre.disableBody(true, true);
         coffre.body.destroy();
+        coffreVert = true;
+
+    }
+    function recupCoffreBleu (player,coffre){
+        
+        coffre.disableBody(true, true);
+        coffre.body.destroy();
+        coffreBleu = true;
+
+    }
+    function recupCoffreMarron (player,coffre){
+        
+        coffre.disableBody(true, true);
+        coffre.body.destroy();
+        coffreMarron = true;
+
+    }
+    function recupCoffreRouge (player,coffre){
+        
+        coffre.disableBody(true, true);
+        coffre.body.destroy();
+        coffreRouge = true;
 
     }
     function ouvrePorte (player,porte){
@@ -1530,12 +1591,5 @@ class LevelPart1 extends Phaser.Scene{
             porte.body.destroy(); 
         }
     }
-   /* function chute (player,zoneMort){
-        
-        gameOver = true;
-        player.body.destroy(true,true)
-        player.disableBody(true, true);
-
-    } */
 
     

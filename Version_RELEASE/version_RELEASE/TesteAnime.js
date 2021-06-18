@@ -11,6 +11,12 @@ class TesteAnime extends Phaser.Scene{
     }
     preload(){
 
+        this.load.image('ecranTitre','assets/menu/ecran_titre.png');
+        this.load.spritesheet('boutonJouer','assets/menu/bouton_jouer.png', { frameWidth: 260, frameHeight: 108 });
+        this.load.spritesheet('bontonCommande','assets/menu/Bouton_commande.png', { frameWidth: 208, frameHeight: 65 });
+        this.load.spritesheet('bontonSuite','assets/menu/Bouton_suite.png', { frameWidth: 75, frameHeight: 45 });
+        this.load.image('panneauCommande','assets/menu/panneau_commande.png');
+        
         this.load.image('parallaxe3','assets/parallaxe/parallaxe_3.png');
         this.load.image('parallaxe2','assets/parallaxe/parallaxe_2.png');
         this.load.image('parallaxe1','assets/parallaxe/parallaxe_1.png');
@@ -18,23 +24,39 @@ class TesteAnime extends Phaser.Scene{
         this.load.audio('audio_fond', 'assets/audio/music_fond.ogg')
         this.load.audio('bruit_coup', 'assets/audio/Bruit_coup.ogg')
 
+        this.load.spritesheet('boutonPause','assets/menu/Bouton_pause.png', { frameWidth: 55, frameHeight: 60 });
+        this.load.image('menuPause','assets/menu/Panneau_pause.png');
+
+        this.load.image('texteChope','assets/tuto/texte_chope.png');
+        this.load.image('texteDebut','assets/menu/Texte_debut.png');
+
+        this.load.image('CoffreGris','assets/menu/coffre/Coffre_gris.png');
+        this.load.image('CoffreVert','assets/menu/coffre/coffre_vert_menu.png');
+        this.load.image('CoffreBleu','assets/menu/coffre/coffre_bleu_menu.png');
+        this.load.image('CoffreMarron','assets/menu/coffre/coffre_marron_menu.png');
+        this.load.image('CoffreRouge','assets/menu/coffre/coffre_rouge_menu.png');
+
+        this.load.spritesheet('boutonRetour','assets/menu/bouton_retour.png', { frameWidth: 208, frameHeight: 65 });
+
         this.load.spritesheet('vinetta', 'assets/spritesheet/spritesheet_Vinetta.png', { frameWidth: 160, frameHeight: 150 });
         this.load.spritesheet('vinetta_Mort_fiole', 'assets/spritesheet/spritesheet_Vinetta_Mort_fiole.png', { frameWidth: 235, frameHeight: 150 });
-        //this.load.spritesheet('mia_mort', 'assets/spritesheet/mia_mort.png', { frameWidth: 210, frameHeight: 150 });
         this.load.spritesheet('soldat', 'assets/spritesheet/spritesheet_soldat.png', { frameWidth: 90, frameHeight: 160 });
         this.load.spritesheet('colosse', 'assets/spritesheet/spritesheet_colosse.png', { frameWidth: 120, frameHeight: 160 });
         this.load.spritesheet('archer', 'assets/spritesheet/spritesheet_tireur.png', { frameWidth: 87, frameHeight: 150 });
         this.load.spritesheet('chimiste', 'assets/spritesheet/spritesheet_chimiste.png', { frameWidth: 90, frameHeight: 150 });
-        
-        this.load.image('flèche','assets/spritesheet/fleche.png');
 
-        //this.load.image('fumi','assets/FX/teste_fumi.png');
         this.load.spritesheet('explosionFumi', 'assets/FX/explosion_fumi.png', { frameWidth: 380, frameHeight: 400 });
         this.load.image('fleche','assets/spritesheet/fleche.png');
-        this.load.image('fiole','assets/item/batterie.png');
         this.load.image('bombe','assets/item/Bombe_Loot.png');
+        this.load.image('fiole','assets/item/Fiole.png');
         this.load.image('clef','assets/item/clef.png');
-        this.load.image('tresor','assets/item/Coffre_loot.png');
+
+        this.load.image('tresorVert','assets/item/Coffre_Vert.png');
+        this.load.image('tresorBleu','assets/item/Coffre_Bleu.png');
+        this.load.image('tresorMarron','assets/item/Coffre_Marron.png');
+        this.load.image('tresorRouge','assets/item/Coffre_Rouge.png');
+
+        this.load.image('porte','assets/item/Porte_deverouille.png');
         
         this.load.image('barreFumi0','assets/barre_fumi/Barre_fumi_0.png');
         this.load.image('barreFumi1','assets/barre_fumi/Barre_fumi_1.png');
@@ -42,16 +64,7 @@ class TesteAnime extends Phaser.Scene{
         this.load.image('barreFumi3','assets/barre_fumi/Barre_fumi_3.png');
         this.load.image('barreFumi4','assets/barre_fumi/Barre_fumi_4.png');
         this.load.image('barreFumi5','assets/barre_fumi/Barre_fumi_5.png');
-
-        this.load.image('boutonPause','assets/menu/Bouton_pause.png');
-        this.load.image('menuPause','assets/menu/Panneau_Pause.png');
-        this.load.spritesheet('boutonRetour','assets/menu/bouton_retour.png', { frameWidth: 208, frameHeight: 65 });
-
-        this.load.spritesheet('flecheDroite','assets/menu/bouton_mobile/Bouton_fleche_droite.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('flecheGauche','assets/menu/bouton_mobile/Bouton_fleche_gauche.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('flecheHaut','assets/menu/bouton_mobile/Bouton_fleche_haut.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('flecheBas','assets/menu/bouton_mobile/Bouton_fleche_bas.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('boutonFumi','assets/menu/bouton_mobile/Bouton_fumi.png', { frameWidth: 48, frameHeight: 48 });
+             
 
         this.load.image('tiles','assets/tiles/Decors.png');
         this.load.tilemapTiledJSON('map','assets/tiles/Teste_anime.json');
@@ -229,263 +242,256 @@ class TesteAnime extends Phaser.Scene{
         /////////////////////////////
 
         enemieObjects = map.getObjectLayer('soldat').objects;
-        this.enemies = this.physics.add.group({
-            allowGravity: true
-        }); 
-        
-        for (const enemie of enemieObjects) {
-            this.enemies.create(enemie.x, enemie.y, 'soldat')
-                .setOrigin(0.5,0.5)
-                .setDepth(1)
-                .setScale(1)
-                .setGravityY(300)
+    this.enemies = this.physics.add.group({
+        allowGravity: true
+    }); 
+    
+    for (const enemie of enemieObjects) {
+        this.enemies.create(enemie.x, enemie.y, 'soldat')
+            .setOrigin(0.5,0.5)
+            .setDepth(1)
+            .setScale(1)
+            .setGravityY(300)
 
-        
-        }
-        for (const enemie of this.enemies.children.entries) {
-            enemie.stun = false;
-            enemie.chope = false;
+    
+    }
+    for (const enemie of this.enemies.children.entries) {
+        enemie.stun = false;
+        enemie.chope = false;
 
-            enemie.body.height = 150;
-            enemie.body.width = 58;
-            //enemie.body.setOffset(((160/2)-(70/2)),0);
-            enemie.body.setOffset(15,10);
-        }
+        enemie.body.height = 150;
+        enemie.body.width = 58;
+        enemie.body.setOffset(15,10);
+    }
 
-        
+    
 
-        ///anime/////
+    ///anime/////
 
-        this.anims.create({
-            key: 'soldatMarche',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 0, end: 7 }),
-            frameRate: 15,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'soldatCourse',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 8, end: 16 }),
-            frameRate: 20,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'soldatStunAtk',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 17, end: 23 }),
-            frameRate: 12,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'soldatStunAtkBoucle',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 24, end: 30  }),
-            frameRate: 10,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'soldatStunFumi',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 31, end: 36 }),
-            frameRate: 12,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'soldatStunFumiBoucle',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 37, end: 44 }),
-            frameRate: 12,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'soldatExecution',
-            frames: this.anims.generateFrameNumbers('soldat', { start: 45, end: 69 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-       
-        this.physics.add.collider(this.enemies, platforms);
-        this.physics.add.overlap(player, this.enemies, chope, null, this);
+    this.anims.create({
+        key: 'soldatMarche',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 0, end: 7 }),
+        frameRate: 15,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'soldatCourse',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 8, end: 16 }),
+        frameRate: 20,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'soldatStunAtk',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 17, end: 23 }),
+        frameRate: 12,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'soldatStunAtkBoucle',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 24, end: 30  }),
+        frameRate: 10,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'soldatStunFumi',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 31, end: 36 }),
+        frameRate: 12,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'soldatStunFumiBoucle',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 37, end: 44 }),
+        frameRate: 12,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'soldatExecution',
+        frames: this.anims.generateFrameNumbers('soldat', { start: 45, end: 69 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+   
+    this.physics.add.collider(this.enemies, platforms);
+    this.physics.add.overlap(player, this.enemies, chope, null, this);
 
-        /////////////////////////////   
-        // COLOSSE ///////////////////
-        /////////////////////////////
+    /////////////////////////////   
+    // COLOSSE ///////////////////
+    /////////////////////////////
 
-        colosseObjects = map.getObjectLayer('colosse').objects;
-        this.colosses = this.physics.add.group({
-            allowGravity: true
-        }); 
-        
-        for (const colosse of colosseObjects) {
-            enemieStun = false
-            colosseX = this.colosses.x
-            colosseY = this.colosses.y
-            this.colosses.create(colosse.x, colosse.y, 'colosse')
-                .setOrigin(0.5,0.5)
-                .setDepth(1)
-                .setScale(1)
-                .setGravityY(300)
-        }
+    colosseObjects = map.getObjectLayer('colosse').objects;
+    this.colosses = this.physics.add.group({
+        allowGravity: true
+    }); 
+    
+    for (const colosse of colosseObjects) {
 
-        for (const colosse of this.colosses.children.entries) {
-            colosse.stun = false;
-            colosse.chope = false;
+        this.colosses.create(colosse.x, colosse.y, 'colosse')
+            .setOrigin(0.5,0.5)
+            .setDepth(1)
+            .setScale(1)
+            .setGravityY(300)
+    }
 
-            colosse.body.height = 160;
-            colosse.body.width = 65;
-            colosse.body.setOffset(20,0);
-        }
-        ///anime/////
+    for (const colosse of this.colosses.children.entries) {
+        colosse.stun = false;
+        colosse.chope = false;
 
-        this.anims.create({
-            key: 'colosseMarche',
-            frames: this.anims.generateFrameNumbers('colosse', { start: 0, end: 12 }),
-            frameRate: 15,
-            repeat: 1,
-        });
+        colosse.body.height = 160;
+        colosse.body.width = 65;
+        colosse.body.setOffset(20,0);
+    }
+    ///anime/////
 
-        this.anims.create({
-            key: 'colosseCourse',
-            frames: this.anims.generateFrameNumbers('colosse', { start: 0, end: 12 }),
-            frameRate: 20,
-            repeat: 1,
-        });
-        this.anims.create({
-            key: 'colosseExecution',
-            frames: this.anims.generateFrameNumbers('colosse', { start: 13, end: 34 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'colosseStun',
-            frames: this.anims.generateFrameNumbers('colosse', { start: 35, end: 48 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'colosseStunBoucle',
-            frames: this.anims.generateFrameNumbers('colosse', { start: 49, end: 57 }),
-            frameRate: 15,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'colosseRebond',
-            frames: this.anims.generateFrameNumbers('colosse', { start: 58, end: 62 }),
-            frameRate: 15,
-            repeat: 0,
-        });
-        
-        this.physics.add.collider(this.colosses, platforms);
-        this.physics.add.overlap(player, this.colosses, chopeColosse, null, this);
+    this.anims.create({
+        key: 'colosseMarche',
+        frames: this.anims.generateFrameNumbers('colosse', { start: 0, end: 12 }),
+        frameRate: 15,
+        repeat: 1,
+    });
 
-        /////////////////////////////   
-        // ARCHER ///////////////////
-        /////////////////////////////
+    this.anims.create({
+        key: 'colosseCourse',
+        frames: this.anims.generateFrameNumbers('colosse', { start: 0, end: 12 }),
+        frameRate: 20,
+        repeat: 1,
+    });
+    this.anims.create({
+        key: 'colosseExecution',
+        frames: this.anims.generateFrameNumbers('colosse', { start: 13, end: 34 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'colosseStun',
+        frames: this.anims.generateFrameNumbers('colosse', { start: 35, end: 48 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'colosseStunBoucle',
+        frames: this.anims.generateFrameNumbers('colosse', { start: 49, end: 57 }),
+        frameRate: 15,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'colosseRebond',
+        frames: this.anims.generateFrameNumbers('colosse', { start: 58, end: 62 }),
+        frameRate: 15,
+        repeat: 0,
+    });
+    
+    this.physics.add.collider(this.colosses, platforms);
+    this.physics.add.overlap(player, this.colosses, chopeColosse, null, this);
 
-        archerObjects = map.getObjectLayer('archer').objects;
-        this.archers = this.physics.add.group({
-            allowGravity: true
-        });
-        
-        for (const archer of archerObjects) {
+    /////////////////////////////   
+    // ARCHER ///////////////////
+    /////////////////////////////
 
-            this.archers.create(archer.x, archer.y, 'archer')
-                .setOrigin(0.5,0.5)
-                .setDepth(1)
-                .setScale(1)
-                .setGravityY(300)
-        }
-        for (const archer of this.archers.children.entries) {
-            archer.tir = 0;
-            archer.stun = false;
-            archer.chope = false;
-        }
-        
-        //this.physics.add.collider(this.archers, platforms, tir, null, this);
-        this.physics.add.collider(this.archers, platforms);
-        this.physics.add.overlap(player, this.archers, chopeAcher, null, this);
+    archerObjects = map.getObjectLayer('archer').objects;
+    this.archers = this.physics.add.group({
+        allowGravity: true
+    });
+    
+    for (const archer of archerObjects) {
 
-        /////////////anime///////
-        this.anims.create({
-            key: 'TireurNeutre',
-            frames: [ { key: 'archer', frame: 0 } ],
-            frameRate: 20
-        })
-        this.anims.create({
-            key: 'TireurTir',
-            frames: this.anims.generateFrameNumbers('archer', { start: 1, end: 17 }),
-            frameRate: 20,
-            repeat: 0,
-        });
+        this.archers.create(archer.x, archer.y, 'archer')
+            .setOrigin(0.5,0.5)
+            .setDepth(1)
+            .setScale(1)
+            .setGravityY(300)
+    }
+    for (const archer of this.archers.children.entries) {
+        archer.tir = 0;
+        archer.stun = false;
+        archer.chope = false;
+    }
+    
+    this.physics.add.collider(this.archers, platforms);
+    this.physics.add.overlap(player, this.archers, chopeAcher, null, this);
 
-        this.anims.create({
-            key: 'TireurStun',
-            frames: this.anims.generateFrameNumbers('archer', { start: 18, end: 28 }),
-            frameRate: 20,
-            repeat: 0,
-        });
-        
-        this.anims.create({
-            key: 'TireurExecution',
-            frames: this.anims.generateFrameNumbers('archer', { start: 29, end: 47 }),
-            frameRate: 19,
-            repeat: 0,
-        });
+    /////////////anime///////
+    this.anims.create({
+        key: 'TireurNeutre',
+        frames: [ { key: 'archer', frame: 0 } ],
+        frameRate: 20
+    })
+    this.anims.create({
+        key: 'TireurTir',
+        frames: this.anims.generateFrameNumbers('archer', { start: 1, end: 17 }),
+        frameRate: 20,
+        repeat: 0,
+    });
 
-        /////////////////////////////   
-        // CHIMISTE /////////////////
-        ////////////////////////////
+    this.anims.create({
+        key: 'TireurStun',
+        frames: this.anims.generateFrameNumbers('archer', { start: 18, end: 28 }),
+        frameRate: 20,
+        repeat: 0,
+    });
+    
+    this.anims.create({
+        key: 'TireurExecution',
+        frames: this.anims.generateFrameNumbers('archer', { start: 29, end: 47 }),
+        frameRate: 19,
+        repeat: 0,
+    });
 
-        chimisteObjects = map.getObjectLayer('chimiste').objects;
-        this.chimiste = this.physics.add.group({
-            allowGravity: true
-        });
-        
-        for (const chimiste of chimisteObjects) {
-            chimisteStun = false
-            //archerX = archer.x
-            //archerY = archer.y
-            this.chimiste.create(chimiste.x, chimiste.y, 'chimiste')
-                .setOrigin(0.5,0.5)
-                .setDepth(1)
-                .setScale(1)
-                .setGravityY(300)
-        }
-        for (const chimiste of this.chimiste.children.entries) {
-            chimiste.lancer = false;
-            chimiste.stun = false;
-            chimiste.fuite = false;
+    /////////////////////////////   
+    // CHIMISTE /////////////////
+    ////////////////////////////
 
-            chimiste.body.height = 150;
-            chimiste.body.width = 58;
-            chimiste.body.setOffset(10,0);
-        }
-        
-        //this.physics.add.collider(this.archers, platforms, tir, null, this);
-        this.physics.add.collider(this.chimiste, platforms);
-        this.physics.add.overlap(player, this.chimiste, chopeChimiste, null, this);
+    chimisteObjects = map.getObjectLayer('chimiste').objects;
+    this.chimiste = this.physics.add.group({
+        allowGravity: true
+    });
+    
+    for (const chimiste of chimisteObjects) {
 
-        /////////////anime///////
+        this.chimiste.create(chimiste.x, chimiste.y, 'chimiste')
+            .setOrigin(0.5,0.5)
+            .setDepth(1)
+            .setScale(1)
+            .setGravityY(300)
+    }
+    for (const chimiste of this.chimiste.children.entries) {
+        chimiste.lancer = false;
+        chimiste.stun = false;
+        chimiste.fuite = false;
 
-        this.anims.create({
-            key: 'chimisteMarche',
-            frames: this.anims.generateFrameNumbers('chimiste', { start: 0, end: 7 }),
-            frameRate: 15,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'chimisteFuite',
-            frames: this.anims.generateFrameNumbers('chimiste', { start: 8, end: 16 }),
-            frameRate: 25,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'chimisteLancer',
-            frames: this.anims.generateFrameNumbers('chimiste', { start: 21, end: 29 }),
-            frameRate: 15,
-            repeat: 0,
-        });
-        this.anims.create({
-            key: 'chimisteStun',
-            frames: this.anims.generateFrameNumbers('chimiste', { start: 32, end: 39 }),
-            frameRate: 10,
-            repeat: 0,
-        });
+        chimiste.body.height = 150;
+        chimiste.body.width = 58;
+        chimiste.body.setOffset(10,0);
+    }
+    
+    this.physics.add.collider(this.chimiste, platforms);
+    this.physics.add.overlap(player, this.chimiste, chopeChimiste, null, this);
+
+    /////////////anime///////
+
+    this.anims.create({
+        key: 'chimisteMarche',
+        frames: this.anims.generateFrameNumbers('chimiste', { start: 0, end: 7 }),
+        frameRate: 15,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'chimisteFuite',
+        frames: this.anims.generateFrameNumbers('chimiste', { start: 8, end: 16 }),
+        frameRate: 25,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'chimisteLancer',
+        frames: this.anims.generateFrameNumbers('chimiste', { start: 21, end: 29 }),
+        frameRate: 15,
+        repeat: 0,
+    });
+    this.anims.create({
+        key: 'chimisteStun',
+        frames: this.anims.generateFrameNumbers('chimiste', { start: 32, end: 39 }),
+        frameRate: 10,
+        repeat: 0,
+    });
         
       /////////////////////////////   
      // CONTROLE /////////////////
@@ -527,6 +533,12 @@ class TesteAnime extends Phaser.Scene{
             flecheDroite.anims.play('DroiteActive',true);
 
         }, this)
+        flecheDroite.on('pointerdown', function(){
+            droite = true;
+        }, this)
+        flecheDroite.on('pointerup', function(){
+            droite = false;
+        }, this)
 
 /////////// BOUTON GAUCHE/////////////
         this.anims.create({
@@ -548,6 +560,12 @@ class TesteAnime extends Phaser.Scene{
             flecheGauche.anims.play('GaucheActive',true);
 
         }, this)
+        flecheGauche.on('pointerdown', function(){
+            gauche = true;
+        }, this)
+        flecheGauche.on('pointerup', function(){
+            gauche = false;
+        }, this)
 
 /////////// BOUTON HAUT/////////////
         this.anims.create({
@@ -568,6 +586,12 @@ class TesteAnime extends Phaser.Scene{
         flecheHaut.on('pointerover', function(){
             flecheHaut.anims.play('HautActive',true);
 
+        }, this)
+        flecheHaut.on('pointerdown', function(){
+            haut = true;
+        }, this)
+        flecheHaut.on('pointerup', function(){
+            haut = false;
         }, this)
 /////////// BOUTON BAS/////////////
         this.anims.create({
@@ -592,9 +616,10 @@ class TesteAnime extends Phaser.Scene{
         }, this)
 
         flecheBas.on('pointerdown', function(){
-            flecheBas.anims.play('BasActive',true);
-            player.setVelocityY(-600);
-
+            bas = true;
+        }, this)
+        flecheBas.on('pointerup', function(){
+            bas = false;
         }, this)
 
         
@@ -620,27 +645,30 @@ class TesteAnime extends Phaser.Scene{
             buttonFumi.anims.play('FumiActive',true);
 
         }, this)
+        buttonFumi.on('pointerdown', function(){
+            utiliseFumi = true;
+            console.log('fumi' + utiliseFumi)
+        }, this)
+        buttonFumi.on('pointerup', function(){
+            utiliseFumi = false;
+            console.log('fumi' + utiliseFumi)
+        }, this)
 
 
     }
     update(){
 
-          /////////////////////////////   
-         // BUTTON  //////////////////
-        ///////////////////////////// 
-
-        
-        
-        //this.musicFond.play()
+        if (player.y > platforms.height){
+            gameOver = true;
+        }
 
           /////////////////////////////   
-         // BARE FUMI ////////////////
+         // BARRE FUMI ///////////////
         ///////////////////////////// 
-
         if(nbFumigene === 5)
         {   
             barreFumi5 = this.add.image(barreFumiX,barreFumiY,'barreFumi5') 
-                .setDepth(2)
+                .setDepth(5)
                 .setScrollFactor(0);
         }
         
@@ -648,7 +676,7 @@ class TesteAnime extends Phaser.Scene{
             
             barreFumi5.destroy();
             barreFumi4 = this.add.image(barreFumiX,barreFumiY,'barreFumi4') 
-                .setDepth(2)
+                .setDepth(5)
                 .setScrollFactor(0);
         }
         
@@ -656,83 +684,75 @@ class TesteAnime extends Phaser.Scene{
 
             barreFumi4.destroy();
             barreFumi3 = this.add.image(barreFumiX,barreFumiY,'barreFumi3') 
-                .setDepth(1)
+                .setDepth(5)
                 .setScrollFactor(0);
         }
         else if (nbFumigene === 2){
             
             barreFumi3.destroy();
             barreFumi2 = this.add.image(barreFumiX,barreFumiY,'barreFumi2') 
-                .setDepth(2)
+                .setDepth(5)
                 .setScrollFactor(0);
         }
         else if (nbFumigene === 1){
             
             barreFumi2.destroy();
             barreFumi1 = this.add.image(barreFumiX,barreFumiY,'barreFumi1') 
-                .setDepth(2)
+                .setDepth(5)
                 .setScrollFactor(0);
         }
         else if (nbFumigene === 0){
             
             barreFumi1.destroy();
             barreFumi0 = this.add.image(barreFumiX,barreFumiY,'barreFumi0') 
-                .setDepth(2)
+                .setDepth(5)
                 .setScrollFactor(0);
-        }
-
-        
-
-        
+        }    
         
     
 
-        if(invincible == true){
+        if(invincible){
+            player.setTint(0x0f3434);
             
-            compteurInvincible-- ;
+            /*compteurInvincible-- ;
             if(compteurInvincible == 0){
                 compteurInvincible = restCompteurInvincible;
-                
+                player.setTint(0xffffff);
                 invincible = false ;
-            }
+            }*/
+        }
+        else {
+            player.setTint(0xffffff);
+            
         }
 
-        if (gameOver == true){
+        if (gameOver){
             player.setVelocityX(0);
             gameOvertext = this.add.text(896/2, 448/2, 'GAME OVER', { fontSize: '32px', fill: '#48E14E' }).setScrollFactor(0).setDepth(1);
             
             if (cursors2.R.isDown){
                 this.scene.restart();
                 gameOver = false;
-                console.log('nbFleche =1');
+                attrape = false;
+                compteur = compteurMax;
+                execution = false;
+                invincible = false;
+                nbFumigene = 5;
+                coffreRouge = false;
+                
             }
-            /*if (mortFleche == true){
-                player.anims.play('mortFleche',true);
-            }*/
-        }
 
-        
-        /*if (enemieStun){
-            setTimeout(function(){enemieStun = false}, 1000);
-            this.enemies.setTint(0xffffff);
-        }*/
-        const dash = Phaser.Input.Keyboard.JustDown(cursors2.SHIFT);
-        const libre = Phaser.Input.Keyboard.JustDown(cursors2.E);
-        if (nbFumigene <= 0){
-            fumigene = false;
         }
         
-        const LacheFumi = Phaser.Input.Keyboard.JustDown(cursors2.E)
+        const libre = Phaser.Input.Keyboard.JustDown(cursors2.E);
         
         onGround = player.body.blocked.down;
-        onLeft = player.body.blocked.left;
-        onRight = player.body.blocked.right;
         
         if (onGround) {
-            
             attaque = false;
             sautTete = false
         }
+
       /////////////////////////////   
      // CONTROLE CLAVIER /////////
     ///////////////////////////// 
@@ -746,18 +766,17 @@ class TesteAnime extends Phaser.Scene{
                 player.setFlipX(true);
                 
             }           
-           
+            
         }
         
         else if ((cursors.right.isDown || cursors2.D.isDown)&& attrape == false)
         {
+
             if (gameOver == false){
                 player.setVelocityX(vitesse_joueur*speed);
                 player.anims.play("course", true);
-                //player.anims.play("colosseExecution", true);
                 player.setFlipX(false);
             }
-            
         }
         
         else if (((cursors.down.isDown || cursors2.S.isDown)&& attrape == false && onGround == false && sautTete == false) && gameOver == false){//direction vers le bas /////////////////////
@@ -765,24 +784,15 @@ class TesteAnime extends Phaser.Scene{
             attaque = true;
         }
 
-        else //position neutre /////////////////////
+        else if (onGround) //position neutre /////////////////////
         {            
-            if (onGround){
-                player.setVelocityX(0);
-               // player.anims.play("neutre", true);
-            }
-            /*else if ( onGround){
-                player.setVelocityX(0);
-                //player.anims.play("neutre", true);
-            }*/
+            player.setVelocityX(0);
         }
 
                 //saut /////////////////////
         if (((cursors.up.isDown && onGround || cursors2.Z.isDown && onGround || cursors2.SPACE.isDown && onGround) && attrape == false) && gameOver == false )
         {
             player.setVelocityY(-vitesse_saut);
-            //player.anims.play("saut", true);
-            doubleJump = false;
 
         }
         
@@ -795,67 +805,47 @@ class TesteAnime extends Phaser.Scene{
 
         if (player.body.velocity.x === 0 && onGround && !gameOver){
             player.anims.play("neutre", true);
-            //player.anims.play("exploseFumi", true);
         }
         if (attrape && compteur > 0 && !gameOver){
             player.anims.play("aTerre",true);
         }
-              
-        
+
         
         ///////////////////////////////////////
         ////// DASH FUMIGENE /////////////////
         /////////////////////////////////////
 
-        if (cursors.right.isDown && libre && jumpCD && fumigene && nbFumigene > 0 && !attrape){
+        if ((cursors.right.isDown || cursors.left.isDown || cursors2.D.isDown || cursors2.Q.isDown) && libre && verifDash && nbFumigene > 0 && !attrape && !gameOver && !invincible){
             this.bruitCoup.play()
             nbFumigene --;
-            jumpCD = false;
-            var jumpDuration = true;
+            verifDash = false;
+            
             speed = 2;
             invincible = true;
+        
+            setTimeout(function(){invincible = false; console.log('invicilble'+ invincible);}, dureInvincible);
+
             
+            //invincible = false;
+            //console.log('invicilble'+ invincible)
             fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
             
-            animeFumerFX = true;
-
+            setTimeout(function(){fumerFX.anims.play('exploseFumi',true)}, 0);
+            setTimeout(function(){fumerFX.destroy();}, 1000);
             setTimeout(function(){speed = 1}, 500);
-            setTimeout(function(){var jumpDuration = false}, 500);
-            setTimeout(function(){jumpCD = true}, 800);
+            setTimeout(function(){var duration = false}, 500);
+            setTimeout(function(){verifDash = true}, 800);
 
         }
-        else if (cursors.left.isDown && libre && jumpCD && fumigene && nbFumigene > 0 && !attrape){
-            
-            nbFumigene = nbFumigene-1
-            jumpCD = false;
-            var jumpDuration = true;
-            speed = 2;
-            invincible = true;
-
-            fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
-            animeFumerFX = true;
-
-            setTimeout(function(){speed = 1}, 500);
-            setTimeout(function(){var jumpDuration = false}, 500);
-            setTimeout(function(){jumpCD = true}, 800);
-
-        } 
-        if (animeFumerFX == true){
-            compteurAnimeFumerFX-- ;
-           // fumerFX.anims.play('exploseFumi',true)
-            /*var teste = 1000;
-            teste --;*/
-            fumerFX.anims.play('exploseFumi',true)
-            if(compteurAnimeFumerFX == 0){
-                compteurAnimeFumerFX = restAnimeFumerFX;
+         if (animeFumerFX){
+            //fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
+            setTimeout(function(){fumerFX.anims.play('exploseFumi',true)}, 0);
+            //setTimeout(function(){fumerFX.destroy();}, 1000);
+            setTimeout(function(){animeFumerFX = false}, 1000);
+            if (!animeFumerFX){
                 fumerFX.destroy();
-                animeFumerFX = false
-                
-            }
-            
-        }     
-        
-
+             }
+        }
 
       /////////////////////////////   
      // COMPORTEMENT ENNEMIE /////
@@ -866,53 +856,53 @@ class TesteAnime extends Phaser.Scene{
     /////////////////////////////
 
         
-        for (const archer of this.archers.children.entries) {
+    for (const archer of this.archers.children.entries) {
 
-            if (archer.tir == 0 && archer.stun == false){
-                
-
-                if (archer.tir == 0 && !archer.stun && archer.x - player.x < detectionArcher && archer.x - player.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
-                    
-                    fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
-                    fleche.body.allowGravity = false;
-                    fleche.setFlipX(false);
-                    archer.tir = 1;
-                    //console.log('nbFleche =1');
-                
-                    fleche.setVelocityX( -vitesseFleche);
-                    archer.anims.play('TireurTir',true);
-                    archer.setFlipX(false);
-
-                    setTimeout(function(){archer.tir = 0;}, 1000);
-                    archer.tir = 1;
-
-                    this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-                    this.physics.add.overlap(fleche, player,flechePlayer,null, this);
-                } 
-                else if (archer.tir == 0 && !archer.stun && player.x - archer.x < detectionArcher && player.x - archer.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
-                    
-                    fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
-                    fleche.body.allowGravity = false;
-                    fleche.setFlipX(true);
-                    archer.tir = 1;
-                    //console.log('nbFleche =1');
+        if (archer.tir == 0 && archer.stun == false){
             
-                    fleche.setVelocityX( vitesseFleche);
-                    archer.anims.play('TireurTir',true);
-                    archer.setFlipX(true);
 
-                    setTimeout(function(){archer.tir = 0;}, 1000);
-                    archer.tir = 1;
+            if (archer.tir == 0 && !archer.stun && archer.x - player.x < detectionArcher && archer.x - player.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
+                
+                fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
+                fleche.body.allowGravity = false;
+                fleche.setFlipX(false);
+                archer.tir = 1;
+                //console.log('nbFleche =1');
+            
+                fleche.setVelocityX( -vitesseFleche);
+                archer.anims.play('TireurTir',true);
+                archer.setFlipX(false);
 
-                    this.physics.add.collider(fleche, platforms, flecheMur,null, this);
-                    this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+                setTimeout(function(){archer.tir = 0;}, 1000);
+                archer.tir = 1;
 
-                }
-                else if (!attrape){
-                    archer.anims.play('TireurNeutre',true);
-                }
+                this.physics.add.collider(fleche, platforms, flecheMur,null, this);
+                this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+            } 
+            else if (archer.tir == 0 && !archer.stun && player.x - archer.x < detectionArcher && player.x - archer.x > 0 && archer.y - player.y < 10 && archer.y - player.y > -10 && !attrape && !invincible && !gameOver){
+                
+                fleche = this.physics.add.sprite(archer.x,archer.y-40,'fleche');
+                fleche.body.allowGravity = false;
+                fleche.setFlipX(true);
+                archer.tir = 1;
+                //console.log('nbFleche =1');
+        
+                fleche.setVelocityX( vitesseFleche);
+                archer.anims.play('TireurTir',true);
+                archer.setFlipX(true);
+
+                setTimeout(function(){archer.tir = 0;}, 1000);
+                archer.tir = 1;
+
+                this.physics.add.collider(fleche, platforms, flecheMur,null, this);
+                this.physics.add.overlap(fleche, player,flechePlayer,null, this);
+
+            }
+            else if (!attrape){
+                archer.anims.play('TireurNeutre',true);
             }
         }
+    }
 
      /////////////////////////////   
      // SOLDAT ///////////////////
@@ -1318,57 +1308,6 @@ class TesteAnime extends Phaser.Scene{
         }
         
     }
-    /*if (!chimisteStun && !gameOver){
-            
-        compteurFiole --;
-        if (compteurFiole == 0 && lancer == false){
-            lancer = true;
-            for (const chimiste of this.chimiste.children.entries) {
-                fiole = this.physics.add.sprite(chimiste.x, chimiste.y, 'fiole');
-
-                if(player.x < chimiste.x){
-                    fiole.setVelocity(Phaser.Math.FloatBetween(-200, -400), Phaser.Math.FloatBetween(-200, -400));
-                    fiole.setGravityY(200);
-                }
-                else if(player.x > chimiste.x){
-                    fiole.setVelocity(Phaser.Math.FloatBetween(200, 400), Phaser.Math.FloatBetween(-200, -400));
-                    fiole.setGravityY(200);
-                }
-
-                this.physics.add.collider(fiole, platforms,fioleMur,null,this);
-                this.physics.add.overlap(fiole, player,fiolePlayer,null, this);
-            }
-            compteurFiole = compteurFioleMax;
-        }
         
-    }*/
-
     }
-        
-        /*if (onGround) {
-        
-            if (player.body.velocity.x < 0){
-
-                player.anims.play('course', true);
-                player.setFlipX(false);
-            }
-            else if (position_base == false){
-
-                player.anims.play('neutre', true);
-                player.setFlipX(false);
-            }
-            else if (player.body.velocity.x > 0){
-
-                player.anims.play('course', true);
-                player.setFlipX(true);
-            } 
-            else if (position_base == true){
-
-                player.anims.play('neutre', true);
-                player.setFlipX(true);
-            }
-        }*/
-        
-    
-    
-    }
+}  
