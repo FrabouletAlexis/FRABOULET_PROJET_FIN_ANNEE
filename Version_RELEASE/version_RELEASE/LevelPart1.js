@@ -865,7 +865,7 @@ class LevelPart1 extends Phaser.Scene{
         /////////////////////////////////////
 
         if ((cursors.right.isDown || cursors.left.isDown || cursors2.D.isDown || cursors2.Q.isDown) && libre && verifDash && nbFumigene > 0 && !attrape && !gameOver && !invincible){
-            this.bruitCoup.play()
+            this.bruitfumi.play()
             nbFumigene --;
             verifDash = false;
             
@@ -1363,6 +1363,7 @@ class LevelPart1 extends Phaser.Scene{
     } 
     function chope(player, enemie){
         if (attaque && enemie.chope == false && onGround == false){
+            this.bruitAttaque.play();
             enemie.stun = true;
             enemie.anims.play('soldatStunAtkBoucle', true);
             setTimeout(function(){enemie.stun = false}, dureStun);
@@ -1379,6 +1380,7 @@ class LevelPart1 extends Phaser.Scene{
                 
 
             if ( (cursors2.E.isDown || utiliseFumi) && nbFumigene > 0 && compteur > 0){
+                this.bruitfumi.play()
                 fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
                 animeFumerFX = true;
                 execution = false;
@@ -1401,12 +1403,14 @@ class LevelPart1 extends Phaser.Scene{
                 
                 gameOver = true;
                 player.anims.play('mortSoldat',true);
+                this.bruitExecution.play()
             }
         }
     } 
     
     function chopeColosse(player, colosse){
         if (attaque && attrape == false && onGround == false){
+            this.bruitCoupColosse.play();
             sautTete = true;
             player.setVelocityY(-vitesse_saut/2);
             colosse.anims.play('colosseRebond',true);
@@ -1424,6 +1428,7 @@ class LevelPart1 extends Phaser.Scene{
             
 
             if ( (cursors2.E.isDown || utiliseFumi) && nbFumigene >0 && compteur >0){
+                this.bruitfumi.play()
                 fumerFX = this.add.sprite(player.x,player.y-125, 'explosionFumi');
                 animeFumerFX = true;
                 execution =false;
@@ -1443,12 +1448,13 @@ class LevelPart1 extends Phaser.Scene{
             else if (compteur == 0){
                 gameOver = true;
                 player.anims.play("mortColosse", true);
+                this.bruitExecution.play()
             }
         }
     }
     function chopeChimiste(player, chimiste){
         if (attaque && attrape == false && onGround == false){
-            
+            this.bruitAttaque.play();
             chimiste.stun = true;
             setTimeout(function(){chimiste.stun = false}, dureStun);
         }
@@ -1456,8 +1462,8 @@ class LevelPart1 extends Phaser.Scene{
     }
     function chopeAcher (player, archer){
         if (attaque && onGround == false){
-            archer.stun = true;
-            
+            this.bruitAttaque.play();
+            archer.stun = true;            
             archer.anims.play('TireurStun',true);
             setTimeout(function(){archer.stun = false}, dureStun);
         }
@@ -1472,6 +1478,7 @@ class LevelPart1 extends Phaser.Scene{
             
 
             if ( (cursors2.E.isDown || utiliseFumi) && nbFumigene >0 && compteur > 0){
+                this.bruitfumi.play()
                 fumerFX = this.add.sprite(player.x,player.y, 'fumi');
                 animeFumerFX = true;
                 
@@ -1491,6 +1498,7 @@ class LevelPart1 extends Phaser.Scene{
                 
                 gameOver = true;
                 player.anims.play('mortFlecheSol',true);
+                this.bruitExecution.play()
             }
         }
         
@@ -1501,13 +1509,14 @@ class LevelPart1 extends Phaser.Scene{
         fleche.body.destroy();
     }
     function fioleMur (fiole,platforms){
+        this.bruitFiole.play();
         fiole.setVelocityX(0);
         fiole.disableBody(true, true);
         fiole.body.destroy();
     }
     function flechePlayer (fleche,player){
         if (invincible == false){
-
+            this.bruitExecution.play()
             if (!gameOver){
                 if (player.x < fleche.x){
                     player.anims.play("mortFleche", true);
@@ -1527,6 +1536,8 @@ class LevelPart1 extends Phaser.Scene{
     }
     function fiolePlayer (fiole,player){
         if (invincible == false){
+            this.bruitFiole.play();
+            this.bruitAcide.play();
             if (!gameOver){
                 if (player.x < fiole.x){
                     player.anims.play("mortFiole", true);

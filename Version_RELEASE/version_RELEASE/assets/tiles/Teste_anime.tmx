@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="78" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="59">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="78" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="64">
  <editorsettings>
   <export target="Teste_anime.json" format="json"/>
  </editorsettings>
@@ -74,12 +74,12 @@
 1065,1066,1067,1068,1069,1070,1071,1072,1073,1074,1075,1076,1077,1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2147484686,2147484685,2147484684,2147484683,2147484682,2147484681,2147484680,2147484679,2147484678,2147484677,2147484676,2147484675,2147484674,2147484673,2147484672,2147484671,2147484670,2147484669,2147484668,2147484667,2147484666,2147484665,2147484664,2147484663,2147484662,2147484661,2147484660,2147484659,2147484658,2147484657
 </data>
  </layer>
- <objectgroup id="2" name="colosse"/>
- <objectgroup id="3" name="chimiste"/>
- <objectgroup id="4" name="soldat">
-  <object id="58" x="1248.76" y="636.282">
+ <objectgroup id="2" name="colosse">
+  <object id="63" x="1281.22" y="569.191">
    <point/>
   </object>
  </objectgroup>
+ <objectgroup id="3" name="chimiste"/>
+ <objectgroup id="4" name="soldat"/>
  <objectgroup id="5" name="archer"/>
 </map>

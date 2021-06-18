@@ -22,10 +22,20 @@ class TesteAnime extends Phaser.Scene{
         this.load.image('parallaxe1','assets/parallaxe/parallaxe_1.png');
 
         this.load.audio('audio_fond', 'assets/audio/music_fond.ogg')
-        this.load.audio('bruit_coup', 'assets/audio/Bruit_coup.ogg')
+        this.load.audio('bruit_fumi', 'assets/audio/bruit_fumi.mp3')
+        this.load.audio('bruit_attaque', 'assets/audio/bruit_attaque.wav')
+        this.load.audio('bruit_acide', 'assets/audio/bruit_acide.mp3')
+        this.load.audio('bruit_coup_colosse', 'assets/audio/bruit_coup_colosse.wav')
+        this.load.audio('bruit_execution', 'assets/audio/bruit_execution.mp3')
+        this.load.audio('bruit_fiole', 'assets/audio/bruit_fiole.mp3')
 
         this.load.spritesheet('boutonPause','assets/menu/Bouton_pause.png', { frameWidth: 55, frameHeight: 60 });
         this.load.image('menuPause','assets/menu/Panneau_pause.png');
+        this.load.spritesheet('flecheDroite','assets/menu/bouton_mobile/Bouton_fleche_droite.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('flecheGauche','assets/menu/bouton_mobile/Bouton_fleche_gauche.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('flecheHaut','assets/menu/bouton_mobile/Bouton_fleche_haut.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('flecheBas','assets/menu/bouton_mobile/Bouton_fleche_bas.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('boutonFumi','assets/menu/bouton_mobile/Bouton_fumi.png', { frameWidth: 48, frameHeight: 48 });
 
         this.load.image('texteChope','assets/tuto/texte_chope.png');
         this.load.image('texteDebut','assets/menu/Texte_debut.png');
@@ -103,7 +113,12 @@ class TesteAnime extends Phaser.Scene{
 
         
 
-        this.bruitCoup = this.sound.add('bruit_coup')
+        this.bruitfumi = this.sound.add('bruit_fumi')
+        this.bruitAttaque = this.sound.add('bruit_attaque')
+        this.bruitAcide = this.sound.add('bruit_acide')
+        this.bruitCoupColosse = this.sound.add('bruit_coup_colosse')
+        this.bruitExecution = this.sound.add('bruit_execution')
+        this.bruitFiole = this.sound.add('bruit_fiole')
 
         this.musicFond = this.sound.add('audio_fond')
         
@@ -216,6 +231,12 @@ class TesteAnime extends Phaser.Scene{
             key: 'mortSoldat',
             frames: this.anims.generateFrameNumbers('vinetta', { start: 101, end: 111 }),
             frameRate: 20,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'attaque',
+            frames: this.anims.generateFrameNumbers('vinetta', { start: 112, end: 116 }),
+            frameRate: 15,
             repeat: 0,
         });
 
@@ -757,7 +778,7 @@ class TesteAnime extends Phaser.Scene{
      // CONTROLE CLAVIER /////////
     ///////////////////////////// 
     
-        if ((cursors.left.isDown || cursors2.Q.isDown)&& attrape == false)
+        if ((cursors.left.isDown || cursors2.Q.isDown || droite)&& attrape == false)
         {   
             if (gameOver == false){
                 
@@ -769,7 +790,7 @@ class TesteAnime extends Phaser.Scene{
             
         }
         
-        else if ((cursors.right.isDown || cursors2.D.isDown)&& attrape == false)
+        else if ((cursors.right.isDown || cursors2.D.isDown || gauche)&& attrape == false)
         {
 
             if (gameOver == false){
@@ -779,7 +800,7 @@ class TesteAnime extends Phaser.Scene{
             }
         }
         
-        else if (((cursors.down.isDown || cursors2.S.isDown)&& attrape == false && onGround == false && sautTete == false) && gameOver == false){//direction vers le bas /////////////////////
+        else if (((cursors.down.isDown || cursors2.S.isDown || bas)&& attrape == false && onGround == false && sautTete == false) && gameOver == false){//direction vers le bas /////////////////////
             player.setVelocityY(vitesseAttaque);
             attaque = true;
         }
@@ -790,7 +811,7 @@ class TesteAnime extends Phaser.Scene{
         }
 
                 //saut /////////////////////
-        if (((cursors.up.isDown && onGround || cursors2.Z.isDown && onGround || cursors2.SPACE.isDown && onGround) && attrape == false) && gameOver == false )
+        if (((cursors.up.isDown || cursors2.Z.isDown || cursors2.SPACE.isDown || haut) && onGround && attrape == false) && gameOver == false )
         {
             player.setVelocityY(-vitesse_saut);
 
@@ -800,7 +821,13 @@ class TesteAnime extends Phaser.Scene{
             player.anims.play("saut", true);
         }
         else if (player.body.velocity.y > 0 && !gameOver){
-            player.anims.play("chute", true);
+            if (attaque){
+                player.anims.play("attaque",true);
+            }
+            else {
+                player.anims.play("chute", true);
+            }
+            
         }
 
         if (player.body.velocity.x === 0 && onGround && !gameOver){
@@ -809,14 +836,15 @@ class TesteAnime extends Phaser.Scene{
         if (attrape && compteur > 0 && !gameOver){
             player.anims.play("aTerre",true);
         }
+        
 
         
         ///////////////////////////////////////
         ////// DASH FUMIGENE /////////////////
         /////////////////////////////////////
 
-        if ((cursors.right.isDown || cursors.left.isDown || cursors2.D.isDown || cursors2.Q.isDown) && libre && verifDash && nbFumigene > 0 && !attrape && !gameOver && !invincible){
-            this.bruitCoup.play()
+        if ((cursors.right.isDown || cursors.left.isDown || cursors2.D.isDown || cursors2.Q.isDown || droite || gauche) && (libre || utiliseFumi) && verifDash && nbFumigene > 0 && !attrape && !gameOver && !invincible){
+            this.bruitfumi.play()
             nbFumigene --;
             verifDash = false;
             

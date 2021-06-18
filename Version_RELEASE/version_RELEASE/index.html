@@ -17,12 +17,18 @@
     <script src="TesteClass.js"></script>
     <style type="text/css">
         body {
-            margin-top:132px;
-            margin-right:310px;
-            margin-bottom:132px;
-            margin-left:320px;
-            border: 5px ridge #15121b;
-            border-radius: 10px;
+            /*margin-top:15%;
+            margin-bottom:15%;
+            margin-right:26.25%;
+            margin-left:26.25%;*/
+            
+            margin-top:15%;
+            margin-bottom:15%;
+            margin-right:26.25%;
+            margin-left:26.25%;
+
+            /*border: 5px ridge #15121b;
+            border-radius: 10px;*/
             background: linear-gradient(#242638, #250738);
         }
     </style>
@@ -47,7 +53,7 @@ var config = {
             debug: false
         }
     },
-    scene: [EcranTitre,LevelPart3,LettreDebut,LevelPart1,TesteAnime,LevelPart4,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
+    scene: [TesteAnime,EcranTitre,LevelPart3,LettreDebut,LevelPart1,LevelPart4,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
 };
 
 var game = new Phaser.Game(config);

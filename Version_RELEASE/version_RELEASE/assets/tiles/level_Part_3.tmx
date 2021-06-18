@@ -6,6 +6,9 @@
  <tileset firstgid="1" name="Decors" tilewidth="32" tileheight="32" tilecount="2240" columns="56">
   <image source="Decors.png" width="1792" height="1280"/>
  </tileset>
+ <tileset firstgid="2241" name="Decors" tilewidth="32" tileheight="32" tilecount="2240" columns="56">
+  <image source="../../../../Version_BETA/version_BETA/assets/tiles/Decors.png" width="1792" height="1280"/>
+ </tileset>
  <layer id="2" name="Fond" width="119" height="83">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1140,0,0,0,0,0,0,0,0,0,0,2186,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2191,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
