@@ -104,10 +104,10 @@ class LevelPart3 extends Phaser.Scene{
 
         function changementZone (player,zoneChargement){
 
-            if (player.y >= 2990 && player.x >= 4840/* && player.x <= 560*/){
-                this.scene.start("LevelPart2");
-                clef1 = false;
-                nbFumigene = 5;
+            if (player.y >= 1357 && player.x >= 3724){
+
+                this.scene.start("LevelPart4");
+
             }
         }
         

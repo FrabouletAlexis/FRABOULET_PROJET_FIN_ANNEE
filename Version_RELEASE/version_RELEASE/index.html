@@ -17,11 +17,18 @@
     <script src="TesteClass.js"></script>
     <style type="text/css">
         body {
-            margin: 0;
+            margin-top:132px;
+            margin-right:310px;
+            margin-bottom:132px;
+            margin-left:320px;
+            border: 5px ridge #15121b;
+            border-radius: 10px;
+            background: linear-gradient(#242638, #250738);
         }
     </style>
 </head>
 <body>
+    
 
 <script type="text/javascript">
 
@@ -40,7 +47,7 @@ var config = {
             debug: false
         }
     },
-    scene: [LevelPart3,EcranTitre,LettreDebut,LevelPart1,TesteAnime,LevelPart4,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
+    scene: [EcranTitre,LevelPart3,LettreDebut,LevelPart1,TesteAnime,LevelPart4,LevelPart2,TesteClass,EcranCommande,LevelTeste ]
 };
 
 var game = new Phaser.Game(config);
